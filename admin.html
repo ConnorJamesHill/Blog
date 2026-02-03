@@ -360,8 +360,8 @@
         
         postsList.innerHTML = '';
         
-        querySnapshot.forEach((document) => {
-          const post = document.data();
+        querySnapshot.forEach((docSnapshot) => {
+          const post = docSnapshot.data();
           const postItem = document.createElement('div');
           postItem.className = 'post-item';
           postItem.innerHTML = `
@@ -374,7 +374,7 @@
               </div>
             </div>
             <div class="post-actions">
-              <button class="icon-button" onclick="deletePost('${document.id}', '${post.title}')">🗑️ Delete</button>
+              <button class="icon-button" onclick="deletePost('${docSnapshot.id}', '${post.title}')">🗑️ Delete</button>
             </div>
           `;
           postsList.appendChild(postItem);
