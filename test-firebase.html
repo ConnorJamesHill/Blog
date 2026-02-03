@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Connection Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f4f6fb;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h1 { color: #0c1524; margin-bottom: 30px; }
+    button {
+      background: #3579ff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px 5px;
+      font-size: 14px;
+    }
+    button:hover { background: #2968e6; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    .result {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .test-section h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #495057;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔥 Firebase Connection Test</h1>
+    
+    <div class="test-section">
+      <h2>1️⃣ Test Firebase Initialization</h2>
+      <button id="testInit">Test Connection</button>
+      <div id="initResult"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>2️⃣ Test Firestore Write</h2>
+      <button id="testFirestore">Write Test Document</button>
+      <div id="firestoreResult"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>3️⃣ Test Firestore Read</h2>
+      <button id="testRead">Read Test Documents</button>
+      <div id="readResult"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>4️⃣ Test Authentication</h2>
+      <button id="testAuth">Check Auth Status</button>
+      <div id="authResult"></div>
+    </div>
+
+    <div class="result info" style="margin-top: 30px;">
+      <strong>💡 Next Steps:</strong><br>
+      1. Click "Test Connection" to verify Firebase is configured<br>
+      2. Enable Firestore in Firebase Console (if not done)<br>
+      3. Enable Authentication with Email/Password<br>
+      4. Run the other tests to verify everything works
+    </div>
+  </div>
+
+  <script type="module">
+    import { db, auth, app } from './js/firebase-config.js';
+    import { 
+      collection, 
+      addDoc, 
+      getDocs,
+      serverTimestamp 
+    } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { 
+      onAuthStateChanged 
+    } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+    // Test 1: Initialize
+    document.getElementById('testInit').addEventListener('click', () => {
+      const resultDiv = document.getElementById('initResult');
+      try {
+        const projectId = app.options.projectId;
+        resultDiv.className = 'result success';
+        resultDiv.innerHTML = `
+          ✅ <strong>Firebase Connected!</strong><br>
+          Project ID: <strong>${projectId}</strong><br>
+          Auth Domain: ${app.options.authDomain}
+        `;
+      } catch (error) {
+        resultDiv.className = 'result error';
+        resultDiv.innerHTML = `❌ <strong>Error:</strong> ${error.message}`;
+      }
+    });
+
+    // Test 2: Firestore Write
+    document.getElementById('testFirestore').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('firestoreResult');
+      const button = document.getElementById('testFirestore');
+      
+      button.disabled = true;
+      resultDiv.className = 'result info';
+      resultDiv.textContent = '⏳ Testing Firestore write...';
+
+      try {
+        const docRef = await addDoc(collection(db, 'test'), {
+          message: 'Firebase is working! 🎉',
+          timestamp: serverTimestamp(),
+          testNumber: Math.floor(Math.random() * 1000)
+        });
+        
+        resultDiv.className = 'result success';
+        resultDiv.innerHTML = `
+          ✅ <strong>Firestore Write Successful!</strong><br>
+          Document ID: <code>${docRef.id}</code><br>
+          Collection: <code>test</code><br><br>
+          <small>Go to Firebase Console → Firestore Database to see this document</small>
+        `;
+      } catch (error) {
+        resultDiv.className = 'result error';
+        resultDiv.innerHTML = `
+          ❌ <strong>Firestore Error:</strong> ${error.message}<br><br>
+          <strong>Common fixes:</strong><br>
+          • Go to Firebase Console → Firestore Database<br>
+          • Click "Create database" if not done<br>
+          • Start in <strong>test mode</strong> for now (we'll secure it later)<br>
+          • Choose a location close to your users
+        `;
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    // Test 3: Firestore Read
+    document.getElementById('testRead').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('readResult');
+      const button = document.getElementById('testRead');
+      
+      button.disabled = true;
+      resultDiv.className = 'result info';
+      resultDiv.textContent = '⏳ Reading test documents...';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, 'test'));
+        
+        if (querySnapshot.empty) {
+          resultDiv.className = 'result info';
+          resultDiv.innerHTML = `
+            ℹ️ <strong>No documents found in 'test' collection</strong><br>
+            Try clicking "Write Test Document" first.
+          `;
+        } else {
+          let docs = [];
+          querySnapshot.forEach((doc) => {
+            docs.push({ id: doc.id, ...doc.data() });
+          });
+          
+          resultDiv.className = 'result success';
+          resultDiv.innerHTML = `
+            ✅ <strong>Read ${docs.length} document(s)!</strong><br><br>
+            <pre>${JSON.stringify(docs, null, 2)}</pre>
+          `;
+        }
+      } catch (error) {
+        resultDiv.className = 'result error';
+        resultDiv.innerHTML = `❌ <strong>Read Error:</strong> ${error.message}`;
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    // Test 4: Auth
+    document.getElementById('testAuth').addEventListener('click', () => {
+      const resultDiv = document.getElementById('authResult');
+      
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          resultDiv.className = 'result success';
+          resultDiv.innerHTML = `
+            ✅ <strong>User Logged In!</strong><br>
+            Email: ${user.email}<br>
+            UID: ${user.uid}
+          `;
+        } else {
+          resultDiv.className = 'result info';
+          resultDiv.innerHTML = `
+            ℹ️ <strong>Not logged in</strong><br><br>
+            <strong>To enable Authentication:</strong><br>
+            1. Go to Firebase Console → Authentication<br>
+            2. Click "Get started"<br>
+            3. Enable "Email/Password" sign-in method<br>
+            4. Add a test user in the "Users" tab
+          `;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

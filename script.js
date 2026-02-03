@@ -5,64 +5,8 @@ const commentList = document.getElementById("commentList");
 const joinForm = document.getElementById("joinForm");
 const joinMessage = document.getElementById("joinMessage");
 
-// Blog posts data
-const blogPosts = [
-  {
-    id: 1,
-    title: "Designing elegant onboarding flows in SwiftUI",
-    category: "SwiftUI",
-    readTime: "4 min read",
-    date: "July 12, 2024",
-    excerpt: "A breakdown of the storyboard-to-SwiftUI migration strategy I used to build a smooth onboarding experience.",
-    url: "posts/swiftui-onboarding-flows.html"
-  },
-  {
-    id: 2,
-    title: "Profiling animations with Instruments",
-    category: "Performance",
-    readTime: "6 min read",
-    date: "July 03, 2024",
-    excerpt: "A guided approach to diagnosing dropped frames and using Core Animation templates to keep UI silky.",
-    url: "posts/profiling-animations-instruments.html"
-  },
-  {
-    id: 3,
-    title: "From MVC to MVVM: a clean refactor plan",
-    category: "Architecture",
-    readTime: "5 min read",
-    date: "June 20, 2024",
-    excerpt: "The checkpoints I follow to refactor existing apps without breaking shipping schedules.",
-    url: "posts/mvc-to-mvvm-refactor.html"
-  },
-  {
-    id: 4,
-    title: "Building custom SwiftUI shapes and paths",
-    category: "SwiftUI",
-    readTime: "7 min read",
-    date: "June 15, 2024",
-    excerpt: "Learn how to create custom shapes beyond the basics—from curves to complex animations.",
-    url: "#"
-  },
-  {
-    id: 5,
-    title: "Async/await in Swift: patterns and best practices",
-    category: "Swift",
-    readTime: "8 min read",
-    date: "June 08, 2024",
-    excerpt: "How modern Swift concurrency changed the way I write asynchronous code.",
-    url: "#"
-  },
-  {
-    id: 6,
-    title: "Debugging memory leaks in iOS apps",
-    category: "Performance",
-    readTime: "6 min read",
-    date: "May 28, 2024",
-    excerpt: "A systematic approach to finding and fixing retain cycles using Xcode's memory graph debugger.",
-    url: "#"
-  }
-];
-
+// Blog posts will be loaded from Firebase
+let blogPosts = [];
 let currentFilter = "All Posts";
 
 const seedComments = [
@@ -92,9 +36,19 @@ const renderBlogPosts = (filter = "All Posts") => {
   const contentGrid = document.querySelector("#blogs .content-grid");
   if (!contentGrid) return;
 
+  if (blogPosts.length === 0) {
+    contentGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Loading posts...</p>';
+    return;
+  }
+
   const filteredPosts = filter === "All Posts" 
     ? blogPosts 
     : blogPosts.filter(post => post.category === filter);
+
+  if (filteredPosts.length === 0) {
+    contentGrid.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">No posts in category "${filter}"</p>`;
+    return;
+  }
 
   contentGrid.innerHTML = filteredPosts.map(post => `
     <article class="card post-card">
@@ -106,7 +60,7 @@ const renderBlogPosts = (filter = "All Posts") => {
       <p>${post.excerpt}</p>
       <div class="post-meta">
         <span>${post.date}</span>
-        <button class="link-button" type="button" onclick="window.location.href='${post.url}'">Read more</button>
+        <button class="link-button" type="button" onclick="window.location.href='${post.url || '#'}'">Read more</button>
       </div>
     </article>
   `).join('');
@@ -184,6 +138,42 @@ if (filterPill) {
   });
 }
 
+// Load posts from Firebase
+async function loadPostsFromFirebase() {
+  try {
+    // Dynamically import Firebase modules
+    const { db } = await import('./js/firebase-config.js');
+    const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    
+    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+    const querySnapshot = await getDocs(q);
+    
+    blogPosts = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      blogPosts.push({
+        id: doc.id,
+        title: data.title,
+        category: data.category,
+        readTime: data.readTime,
+        date: data.date,
+        excerpt: data.excerpt,
+        url: `post.html?id=${doc.id}` // Dynamic post URL
+      });
+    });
+    
+    renderBlogPosts(currentFilter);
+  } catch (error) {
+    console.error('Error loading posts from Firebase:', error);
+    // Fallback to showing a message
+    const contentGrid = document.querySelector("#blogs .content-grid");
+    if (contentGrid) {
+      contentGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Unable to load posts. Please check back later.</p>';
+    }
+  }
+}
+
 // Initialize
 renderComments();
 renderBlogPosts();
+loadPostsFromFirebase();
