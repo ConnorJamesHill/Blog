@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Journey Blog</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="nav">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div class="brand-text">
+            <p class="brand-title">Code Journey</p>
+            <p class="brand-subtitle">iOS Developer · Blog & Portfolio</p>
+          </div>
+        </div>
+        <div class="nav-actions">
+          <button class="ghost-button" type="button">Subscribe</button>
+          <button class="primary-button" type="button">New Post</button>
+        </div>
+      </nav>
+      <div class="hero-content">
+        <div class="hero-text">
+          <p class="eyebrow">Swift · UIKit · SwiftUI · Xcode</p>
+          <h1>Sharing my coding journey through polished iOS experiences.</h1>
+          <p class="hero-description">
+            A modern space to document lessons learned, showcase shipped apps,
+            and connect with developers who care about craftsmanship.
+          </p>
+          <div class="hero-cta">
+            <button class="primary-button" type="button">Join the Blog</button>
+            <button class="secondary-button" type="button">View Portfolio</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2>Newsletter Highlights</h2>
+          <p>
+            New blog posts and project launches are delivered straight to your
+            inbox. Confirm your email within 24 hours to activate alerts.
+          </p>
+          <div class="email-tags">
+            <span>New Posts</span>
+            <span>Portfolio Drops</span>
+            <span>iOS Tips</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="tabs">
+        <button class="tab active" data-tab="blogs">Blogs</button>
+        <button class="tab" data-tab="portfolio">Portfolio</button>
+        <button class="tab" data-tab="about">About Me</button>
+        <button class="tab" data-tab="settings">Settings</button>
+      </section>
+
+      <section class="tab-panel active" id="blogs">
+        <div class="panel-header">
+          <div>
+            <h2>Latest Blog Posts</h2>
+            <p class="muted">
+              Deep dives, quick tips, and lessons from building iOS products.
+            </p>
+          </div>
+          <div class="filter-pill">All Posts</div>
+        </div>
+
+        <div class="content-grid">
+          <article class="card post-card">
+            <div class="card-header">
+              <p class="pill">SwiftUI</p>
+              <span class="muted">4 min read</span>
+            </div>
+            <h3>Designing elegant onboarding flows in SwiftUI</h3>
+            <p>
+              A breakdown of the storyboard-to-SwiftUI migration strategy I used
+              to build a smooth onboarding experience.
+            </p>
+            <div class="post-meta">
+              <span>July 12, 2024</span>
+              <button class="link-button" type="button">Read more</button>
+            </div>
+          </article>
+
+          <article class="card post-card">
+            <div class="card-header">
+              <p class="pill">Performance</p>
+              <span class="muted">6 min read</span>
+            </div>
+            <h3>Profiling animations with Instruments</h3>
+            <p>
+              A guided approach to diagnosing dropped frames and using Core
+              Animation templates to keep UI silky.
+            </p>
+            <div class="post-meta">
+              <span>July 03, 2024</span>
+              <button class="link-button" type="button">Read more</button>
+            </div>
+          </article>
+
+          <article class="card post-card">
+            <div class="card-header">
+              <p class="pill">Architecture</p>
+              <span class="muted">5 min read</span>
+            </div>
+            <h3>From MVC to MVVM: a clean refactor plan</h3>
+            <p>
+              The checkpoints I follow to refactor existing apps without breaking
+              shipping schedules.
+            </p>
+            <div class="post-meta">
+              <span>June 20, 2024</span>
+              <button class="link-button" type="button">Read more</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="comments">
+          <h3>Community Comments</h3>
+          <p class="muted">
+            Join the discussion by leaving feedback or questions on any post.
+          </p>
+          <form class="comment-form">
+            <input type="text" name="name" placeholder="Your name" required />
+            <textarea
+              name="comment"
+              rows="4"
+              placeholder="Share your thoughts..."
+              required
+            ></textarea>
+            <button class="primary-button" type="submit">Post Comment</button>
+          </form>
+          <div class="comment-list" id="commentList"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="portfolio">
+        <div class="panel-header">
+          <div>
+            <h2>Portfolio</h2>
+            <p class="muted">
+              A curated list of iOS apps, experiments, and shipped features.
+            </p>
+          </div>
+          <div class="filter-pill">Featured</div>
+        </div>
+        <div class="content-grid">
+          <article class="card project-card">
+            <h3>Pulse — Fitness Companion</h3>
+            <p>
+              SwiftUI + HealthKit app with live activity rings and personalized
+              coaching.
+            </p>
+            <div class="project-tags">
+              <span>SwiftUI</span>
+              <span>HealthKit</span>
+              <span>Combine</span>
+            </div>
+          </article>
+          <article class="card project-card">
+            <h3>Studio Tasks</h3>
+            <p>
+              A UIKit productivity app with real-time collaboration and offline
+              sync.
+            </p>
+            <div class="project-tags">
+              <span>UIKit</span>
+              <span>CloudKit</span>
+              <span>Core Data</span>
+            </div>
+          </article>
+          <article class="card project-card">
+            <h3>Lensy</h3>
+            <p>
+              Camera-forward journaling with custom filters and Core ML
+              enhancements.
+            </p>
+            <div class="project-tags">
+              <span>Core ML</span>
+              <span>AVFoundation</span>
+              <span>Metal</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="about">
+        <div class="panel-header">
+          <div>
+            <h2>About Me</h2>
+            <p class="muted">Quick snapshot of my background and focus.</p>
+          </div>
+        </div>
+        <div class="card about-card">
+          <p>
+            I am an iOS app developer who obsesses over pixel-perfect details and
+            buttery-smooth performance. My mission is to craft delightful mobile
+            experiences that feel native, intuitive, and reliable.
+          </p>
+          <p>
+            On this blog, I share my progress, design patterns, and lessons
+            learned while building production apps.
+          </p>
+          <div class="about-stats">
+            <div>
+              <h4>6+</h4>
+              <span>Years in iOS</span>
+            </div>
+            <div>
+              <h4>18</h4>
+              <span>Shipped Apps</span>
+            </div>
+            <div>
+              <h4>3</h4>
+              <span>Current Focus Areas</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="settings">
+        <div class="panel-header">
+          <div>
+            <h2>Membership & Email Preferences</h2>
+            <p class="muted">
+              Join the blog, confirm your email within 24 hours, and customize
+              what you receive.
+            </p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <form class="card join-card" id="joinForm">
+            <h3>Join the Blog</h3>
+            <p>
+              Receive updates when new posts or projects go live. Confirmation is
+              required within 24 hours.
+            </p>
+            <input type="text" name="fullName" placeholder="Full name" required />
+            <input type="email" name="email" placeholder="Email address" required />
+            <button class="primary-button" type="submit">Create Account</button>
+            <div class="form-message" id="joinMessage" role="status"></div>
+          </form>
+
+          <div class="card preferences-card">
+            <h3>Email Preferences</h3>
+            <p class="muted">
+              Choose how you want to hear about new posts and portfolio updates.
+            </p>
+            <div class="toggle-list">
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span>All Notifications</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span>New Blog Posts</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span>Portfolio Updates</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" />
+                <span>Monthly iOS Tips</span>
+              </label>
+            </div>
+            <button class="secondary-button" type="button">
+              Save Preferences
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© 2024 Code Journey. Built with HTML, CSS, and JavaScript.</p>
+      <div class="footer-links">
+        <button class="link-button" type="button">LinkedIn</button>
+        <button class="link-button" type="button">GitHub</button>
+        <button class="link-button" type="button">Contact</button>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
