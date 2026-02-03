@@ -263,7 +263,7 @@
       addDoc,
       getDocs,
       deleteDoc,
-      doc,
+      doc as firestoreDoc,
       serverTimestamp,
       orderBy,
       query
@@ -391,7 +391,7 @@
       if (!confirm(`Delete "${postTitle}"?`)) return;
       
       try {
-        await deleteDoc(doc(db, 'posts', postId));
+        await deleteDoc(firestoreDoc(db, 'posts', postId));
         loadPosts();
         statusMessage.className = 'status-message success show';
         statusMessage.textContent = '✅ Post deleted successfully!';

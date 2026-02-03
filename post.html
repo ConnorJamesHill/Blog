@@ -60,7 +60,7 @@
 
   <script type="module">
     import { db } from './js/firebase-config.js';
-    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { doc as firestoreDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
     // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -80,7 +80,7 @@
 
     async function loadPost(postId) {
       try {
-        const docRef = doc(db, 'posts', postId);
+        const docRef = firestoreDoc(db, 'posts', postId);
         const docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
