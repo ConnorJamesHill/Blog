@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profiling animations with Instruments - Code Journey</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../post-styles.css" />
+  </head>
+  <body>
+    <header class="post-header">
+      <nav class="nav">
+        <div class="brand">
+          <a href="../index.html" class="brand-link">
+            <span class="brand-mark"></span>
+            <div class="brand-text">
+              <p class="brand-title">Code Journey</p>
+              <p class="brand-subtitle">iOS Developer · Blog & Portfolio</p>
+            </div>
+          </a>
+        </div>
+        <div class="nav-actions">
+          <button class="ghost-button" type="button" onclick="window.location.href='../index.html#settings'">Subscribe</button>
+          <button class="secondary-button" type="button" onclick="window.location.href='../index.html'">Back to Blog</button>
+        </div>
+      </nav>
+    </header>
+
+    <article class="post-content">
+      <div class="post-hero">
+        <div class="post-meta-header">
+          <span class="pill">Performance</span>
+          <span class="post-date">July 03, 2024</span>
+          <span class="read-time">6 min read</span>
+        </div>
+        <h1>Profiling animations with Instruments</h1>
+        <p class="post-subtitle">
+          A guided approach to diagnosing dropped frames and using Core Animation templates to keep UI silky smooth.
+        </p>
+      </div>
+
+      <div class="post-body">
+        <h2>Why 60 FPS Matters</h2>
+        <p>
+          Users notice when animations stutter. Even brief frame drops can make your app feel unpolished. On devices with ProMotion displays, you're aiming for 120 FPS—which makes performance optimization even more critical.
+        </p>
+
+        <h2>Getting Started with Instruments</h2>
+        <p>
+          Instruments is Apple's profiling tool built into Xcode. It's incredibly powerful but can be intimidating at first. Here's how I approach animation profiling:
+        </p>
+
+        <h3>Step 1: Profile on a Real Device</h3>
+        <p>
+          The simulator lies. Always profile on actual hardware, preferably an older device that represents your minimum supported iOS version.
+        </p>
+
+        <pre><code>// In Xcode
+Product > Profile (⌘I)
+// Select "Core Animation" template
+// Run on your physical device</code></pre>
+
+        <h3>Step 2: Identify the Problem Areas</h3>
+        <p>
+          Look for these red flags in the Core Animation instrument:
+        </p>
+        <ul>
+          <li><strong>Frame Rate</strong> - Consistently below 60 FPS</li>
+          <li><strong>Color Blended Layers</strong> - Red areas indicate expensive blending</li>
+          <li><strong>Color Offscreen-Rendered</strong> - Yellow areas show layers being rendered separately</li>
+          <li><strong>Color Misaligned Images</strong> - Improper image scaling</li>
+        </ul>
+
+        <h2>Common Animation Performance Killers</h2>
+
+        <h3>1. Shadow Rendering</h3>
+        <p>
+          Shadows are expensive. Here's how I optimized a custom card view:
+        </p>
+
+        <pre><code>// ❌ Bad - shadowPath is recalculated every frame
+cardView.layer.shadowColor = UIColor.black.cgColor
+cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
+cardView.layer.shadowOpacity = 0.2
+cardView.layer.shadowRadius = 8
+
+// ✅ Good - shadowPath is cached
+cardView.layer.shadowColor = UIColor.black.cgColor
+cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
+cardView.layer.shadowOpacity = 0.2
+cardView.layer.shadowRadius = 8
+cardView.layer.shadowPath = UIBezierPath(
+    roundedRect: cardView.bounds,
+    cornerRadius: 12
+).cgPath</code></pre>
+
+        <h3>2. Image Scaling</h3>
+        <p>
+          Forcing Core Animation to resize images on the fly is a frame-rate killer:
+        </p>
+
+        <pre><code>// ✅ Pre-scale images to display size
+let targetSize = CGSize(width: 300, height: 200)
+let scaledImage = UIGraphicsImageRenderer(size: targetSize).image { _ in
+    image.draw(in: CGRect(origin: .zero, size: targetSize))
+}</code></pre>
+
+        <h3>3. Expensive View Hierarchies</h3>
+        <p>
+          Deeply nested views compound rendering costs. I flattened one of my table view cells from 12 subviews to 4 and saw frame rates jump from 52 FPS to 60 FPS.
+        </p>
+
+        <h2>The Time Profiler Workflow</h2>
+        <p>
+          When Core Animation shows problems but you're not sure where they're coming from, switch to Time Profiler:
+        </p>
+
+        <ol>
+          <li>Record your interaction (e.g., scrolling through a list)</li>
+          <li>Look for hot paths in the call tree</li>
+          <li>Focus on functions taking >10ms</li>
+          <li>Expand to see which of your methods are called</li>
+        </ol>
+
+        <h2>SwiftUI Specifics</h2>
+        <p>
+          SwiftUI hides a lot of the rendering pipeline, but you can still optimize:
+        </p>
+
+        <pre><code>// Use .drawingGroup() for complex animations
+ComplexView()
+    .drawingGroup()
+
+// Prefer .animation(_:value:) over .animation(_:)
+.animation(.spring(), value: isExpanded)</code></pre>
+
+        <h2>My Profiling Checklist</h2>
+        <p>Before shipping any animation-heavy feature, I run through this:</p>
+        
+        <ul>
+          <li>✅ Profile on oldest supported device</li>
+          <li>✅ Check frame rate during scroll/animations</li>
+          <li>✅ Enable Color Blended Layers</li>
+          <li>✅ Look for red flags in Core Animation</li>
+          <li>✅ Time profile any stutters</li>
+          <li>✅ Test on ProMotion displays (if targeting iPhone 13+)</li>
+        </ul>
+
+        <h2>Results</h2>
+        <p>
+          After applying these techniques to my last app, I reduced dropped frames by 90% during scrolling. The app went from feeling "okay" to genuinely buttery.
+        </p>
+
+        <p>
+          Instruments has a learning curve, but it's worth it. Your users might not consciously notice perfect 60 FPS, but they'll definitely feel the difference.
+        </p>
+
+        <div class="share-section">
+          <h3>Share this article</h3>
+          <div class="share-buttons">
+            <a href="https://twitter.com/intent/tweet?text=Profiling%20animations%20with%20Instruments&url=" class="share-button twitter" target="_blank">
+              <span>🐦</span>
+              Share on Twitter
+            </a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=" class="share-button linkedin" target="_blank">
+              <span>💼</span>
+              Share on LinkedIn
+            </a>
+            <button class="share-button copy" onclick="navigator.clipboard.writeText(window.location.href); this.textContent = '✓ Copied!'">
+              <span>🔗</span>
+              Copy Link
+            </button>
+          </div>
+        </div>
+
+        <div class="author-section">
+          <div class="author-avatar">CH</div>
+          <div class="author-info">
+            <h4>Connor Hill</h4>
+            <p>
+              iOS developer passionate about crafting delightful mobile experiences. 
+              I write about SwiftUI, UIKit, and everything in between. 
+              Currently building apps that prioritize performance and user experience.
+            </p>
+          </div>
+        </div>
+
+        <div class="post-footer-cta">
+          <h3>Want more performance tips?</h3>
+          <p>I regularly share iOS optimization techniques. Subscribe to stay updated.</p>
+          <button class="primary-button" onclick="window.location.href='../index.html#settings'">
+            Subscribe to Newsletter
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div>
+          <p class="footer-title">Code Journey</p>
+          <p>© 2026 Connor Hill. All rights reserved.</p>
+          <p class="footer-subtitle">Building delightful iOS experiences.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-section">
+            <h4>Connect</h4>
+            <a href="#" class="link-button">LinkedIn</a>
+            <a href="#" class="link-button">GitHub</a>
+            <a href="#" class="link-button">Twitter</a>
+            <a href="mailto:hello@codejourney.dev" class="link-button">Email</a>
+          </div>
+          <div class="footer-section">
+            <h4>Navigate</h4>
+            <a href="../index.html#blogs" class="link-button">Blog</a>
+            <a href="../index.html#portfolio" class="link-button">Portfolio</a>
+            <a href="../index.html#about" class="link-button">About</a>
+            <a href="../index.html#settings" class="link-button">Subscribe</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
