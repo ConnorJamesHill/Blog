@@ -205,31 +205,31 @@
       <section class="tab-panel" id="settings">
         <div class="panel-header">
           <div>
-            <h2>Subscribe to Connor Hill's Blog</h2>
+            <h2>Newsletter</h2>
             <p class="muted">
-              Don't miss out on the latest iOS development insights. Get new posts delivered directly to your inbox.
+              Subscribe to get notified when I publish new posts or launch new projects.
             </p>
           </div>
         </div>
         <div class="settings-grid">
           <form class="card join-card" id="joinForm">
-            <h3>📬 Join the Newsletter</h3>
-            <p>
-              Get notified when new blog posts and portfolio projects launch. Weekly digests with iOS tips, tricks, and best practices.
+            <h3>Subscribe</h3>
+            <p style="margin-bottom: 20px;">
+              Create an account to follow along with new iOS tutorials and app releases.
             </p>
             <div id="signupStep">
               <input type="text" name="fullName" id="joinFullName" placeholder="Full name" required />
               <input type="email" name="email" id="joinEmail" placeholder="Email address" required />
               <input type="password" name="password" id="joinPassword" placeholder="Create password (min 6 characters)" required minlength="6" />
-              <button class="primary-button" type="submit">Subscribe & Create Account</button>
+              <button class="primary-button" type="submit">Create Account</button>
             </div>
             <div id="verificationStep" style="display: none;">
-              <h4 style="margin: 0 0 8px 0; color: var(--text-primary);">📧 Check Your Email</h4>
+              <h4 style="margin: 0 0 8px 0; color: var(--text-primary);">Check Your Email</h4>
               <p style="margin: 0 0 16px 0; color: var(--text-secondary); font-size: 14px;">
-                We've sent a 6-digit verification code to <strong id="verifyEmail"></strong>
+                We sent a 6-digit verification code to <strong id="verifyEmail"></strong>
               </p>
               <input type="text" id="verificationCode" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" required style="text-align: center; font-size: 24px; font-weight: 600; letter-spacing: 8px;" />
-              <button class="primary-button" type="button" id="verifyCodeBtn">Verify & Complete Signup</button>
+              <button class="primary-button" type="button" id="verifyCodeBtn">Verify & Complete</button>
               <div style="display: flex; gap: 8px; margin-top: 8px;">
                 <button class="secondary-button" type="button" id="resendCodeBtn" style="flex: 1;">Resend Code</button>
                 <button class="ghost-button" type="button" id="cancelVerificationBtn" style="flex: 1;">Cancel</button>
@@ -237,43 +237,30 @@
             </div>
             <div class="form-message" id="joinMessage" role="status"></div>
             <p class="form-note">
-              <small>🔒 No spam. Unsubscribe at any time. I respect your privacy.</small>
+              <small>No spam. Unsubscribe anytime.</small>
             </p>
           </form>
 
           <div class="card preferences-card">
-            <h3>What You'll Get</h3>
+            <h3>What to Expect</h3>
             <div class="benefits-list">
               <div class="benefit-item">
-                <span class="benefit-icon">📱</span>
                 <div>
-                  <h4>iOS Development Tutorials</h4>
-                  <p class="muted">Deep dives into SwiftUI, UIKit, and performance optimization.</p>
+                  <h4>New Post Notifications</h4>
+                  <p class="muted">Get an email when I publish a new tutorial or article.</p>
                 </div>
               </div>
               <div class="benefit-item">
-                <span class="benefit-icon">🚀</span>
                 <div>
-                  <h4>Project Launch Updates</h4>
-                  <p class="muted">Be the first to know about new apps and portfolio additions.</p>
+                  <h4>Project Updates</h4>
+                  <p class="muted">Updates when I launch new apps or add to my portfolio.</p>
                 </div>
               </div>
               <div class="benefit-item">
-                <span class="benefit-icon">💡</span>
                 <div>
-                  <h4>Quick Tips & Best Practices</h4>
-                  <p class="muted">Actionable insights from real-world iOS development.</p>
+                  <h4>Comment Notifications</h4>
+                  <p class="muted">Optional replies to your comments on posts.</p>
                 </div>
-              </div>
-            </div>
-            <div class="subscriber-stats">
-              <div class="stat">
-                <strong>500+</strong>
-                <span>Subscribers</span>
-              </div>
-              <div class="stat">
-                <strong>Weekly</strong>
-                <span>Updates</span>
               </div>
             </div>
           </div>
