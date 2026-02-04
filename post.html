@@ -381,12 +381,17 @@
             <!-- Login prompt for non-authenticated users -->
             <div id="loginPrompt" class="comment-login-prompt" style="display: none;">
               <h4 style="margin-bottom: 12px; color: var(--text-primary);">🔒 Login Required</h4>
-              <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                Please log in to leave a comment and join the discussion.
+              <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Please log in or create an account to leave a comment and join the discussion.
               </p>
-              <button class="primary-button" onclick="document.getElementById('loginBtn').click()">
-                Log In to Comment
-              </button>
+              <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button class="primary-button" onclick="document.getElementById('loginBtn').click()">
+                  Log In
+                </button>
+                <button class="secondary-button" onclick="document.getElementById('signupBtn').click()">
+                  Create Account
+                </button>
+              </div>
             </div>
             
             <!-- Comment form (only visible when logged in) -->
