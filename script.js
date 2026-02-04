@@ -92,6 +92,14 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Handle hash changes (for subscribe buttons, etc.)
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.slice(1);
+  if (hash && ['blogs', 'portfolio', 'about', 'settings'].includes(hash)) {
+    setActiveTab(hash);
+  }
+});
+
 commentForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const formData = new FormData(commentForm);
