@@ -293,13 +293,6 @@
                     <p class="muted">Get notified when someone replies to your comments.</p>
                   </div>
                 </label>
-                <label class="preference-item">
-                  <input type="checkbox" id="prefWeeklyDigest" />
-                  <div>
-                    <h4>Weekly Digest</h4>
-                    <p class="muted">A weekly summary of posts and updates you might have missed.</p>
-                  </div>
-                </label>
               </div>
               <button class="primary-button" id="savePreferencesBtn" style="margin-top: 20px;">Save Preferences</button>
               <div class="form-message" id="preferencesMessage" role="status"></div>
@@ -484,7 +477,6 @@
             document.getElementById('prefNewPosts').checked = prefs.newPosts !== false;
             document.getElementById('prefProjects').checked = prefs.projects !== false;
             document.getElementById('prefCommentReplies').checked = prefs.commentReplies !== false;
-            document.getElementById('prefWeeklyDigest').checked = prefs.weeklyDigest === true;
           }
         } catch (error) {
           console.error('Error loading preferences:', error);
@@ -510,8 +502,7 @@
           const preferences = {
             newPosts: document.getElementById('prefNewPosts').checked,
             projects: document.getElementById('prefProjects').checked,
-            commentReplies: document.getElementById('prefCommentReplies').checked,
-            weeklyDigest: document.getElementById('prefWeeklyDigest').checked
+            commentReplies: document.getElementById('prefCommentReplies').checked
           };
 
           console.log('Saving preferences for user:', user.uid, preferences);

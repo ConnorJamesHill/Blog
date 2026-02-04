@@ -152,8 +152,7 @@ function init() {
           emailPreferences: {
             newPosts: true,
             projects: true,
-            commentReplies: true,
-            weeklyDigest: false
+            commentReplies: true
           }
         });
 
