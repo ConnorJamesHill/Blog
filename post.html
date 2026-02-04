@@ -31,7 +31,7 @@
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>🔐 Admin Login</h2>
+        <h2>🔐 Log In</h2>
         <span class="close-modal" id="closeModal">&times;</span>
       </div>
       <div class="modal-body">
@@ -49,9 +49,52 @@
             Sign In
           </button>
         </form>
+        <p style="text-align: center; margin-top: 16px; color: var(--text-secondary);">
+          Don't have an account? <button class="link-button" type="button" id="switchToSignup" style="padding: 0;">Create one</button>
+        </p>
       </div>
     </div>
   </div>
+
+  <!-- Sign Up Modal -->
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>✨ Create Account</h2>
+        <span class="close-modal" id="closeSignupModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="signupError" class="login-error"></div>
+        <form id="modalSignupForm">
+          <div class="modal-form-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName" required placeholder="John Doe" autocomplete="name">
+          </div>
+          <div class="modal-form-group">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" required placeholder="your@email.com" autocomplete="email">
+          </div>
+          <div class="modal-form-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" required placeholder="••••••••" autocomplete="new-password" minlength="6">
+          </div>
+          <div class="modal-form-group">
+            <label for="signupPasswordConfirm">Confirm Password</label>
+            <input type="password" id="signupPasswordConfirm" required placeholder="••••••••" autocomplete="new-password" minlength="6">
+          </div>
+          <button type="submit" class="primary-button" id="modalSignupButton" style="width: 100%;">
+            Create Account
+          </button>
+        </form>
+        <p style="text-align: center; margin-top: 16px; color: var(--text-secondary);">
+          Already have an account? <button class="link-button" type="button" id="switchToLogin" style="padding: 0;">Log in</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden signup trigger button -->
+  <button id="signupBtn" style="display: none;"></button>
 
   <article class="post-content" id="postContent">
     <div style="text-align: center; padding: 100px 40px; color: var(--text-secondary);">
@@ -87,8 +130,8 @@
 
   <script type="module">
     import { db, auth } from './js/firebase-config.js';
-    import { doc as firestoreDoc, getDoc, collection, addDoc, query, orderBy, getDocs, Timestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-    import { signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import { doc as firestoreDoc, getDoc, collection, addDoc, query, orderBy, getDocs, Timestamp, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
     // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -97,13 +140,25 @@
     // Track current user
     let currentUser = null;
 
-    // Authentication UI
+    // Authentication UI - Login
     const loginBtn = document.getElementById('loginBtn');
     const loginModal = document.getElementById('loginModal');
     const closeModal = document.getElementById('closeModal');
     const modalLoginForm = document.getElementById('modalLoginForm');
     const modalLoginButton = document.getElementById('modalLoginButton');
     const loginError = document.getElementById('loginError');
+
+    // Authentication UI - Signup
+    const signupBtn = document.getElementById('signupBtn');
+    const signupModal = document.getElementById('signupModal');
+    const closeSignupModal = document.getElementById('closeSignupModal');
+    const modalSignupForm = document.getElementById('modalSignupForm');
+    const modalSignupButton = document.getElementById('modalSignupButton');
+    const signupError = document.getElementById('signupError');
+
+    // Modal switchers
+    const switchToSignup = document.getElementById('switchToSignup');
+    const switchToLogin = document.getElementById('switchToLogin');
 
     // Check authentication state
     onAuthStateChanged(auth, (user) => {
@@ -136,12 +191,17 @@
       modalLoginForm.reset();
     });
 
-    // Close modal when clicking outside
+    // Close modals when clicking outside
     window.addEventListener('click', (e) => {
       if (e.target === loginModal) {
         loginModal.style.display = 'none';
         loginError.textContent = '';
         modalLoginForm.reset();
+      }
+      if (e.target === signupModal) {
+        signupModal.style.display = 'none';
+        signupError.textContent = '';
+        modalSignupForm.reset();
       }
     });
 
@@ -188,6 +248,102 @@
         loginModal.style.display = 'none';
         loginError.textContent = '';
         modalLoginForm.reset();
+      }
+      if (e.key === 'Escape' && signupModal.style.display === 'flex') {
+        signupModal.style.display = 'none';
+        signupError.textContent = '';
+        modalSignupForm.reset();
+      }
+    });
+
+    // Signup modal handlers
+    signupBtn.addEventListener('click', () => {
+      signupModal.style.display = 'flex';
+    });
+
+    closeSignupModal.addEventListener('click', () => {
+      signupModal.style.display = 'none';
+      signupError.textContent = '';
+      modalSignupForm.reset();
+    });
+
+    // Switch between login and signup
+    switchToSignup.addEventListener('click', () => {
+      loginModal.style.display = 'none';
+      loginError.textContent = '';
+      modalLoginForm.reset();
+      signupModal.style.display = 'flex';
+    });
+
+    switchToLogin.addEventListener('click', () => {
+      signupModal.style.display = 'none';
+      signupError.textContent = '';
+      modalSignupForm.reset();
+      loginModal.style.display = 'flex';
+    });
+
+    // Handle signup
+    modalSignupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+      
+      // Validate passwords match
+      if (password !== passwordConfirm) {
+        signupError.textContent = 'Passwords do not match.';
+        return;
+      }
+
+      if (password.length < 6) {
+        signupError.textContent = 'Password must be at least 6 characters.';
+        return;
+      }
+      
+      modalSignupButton.disabled = true;
+      modalSignupButton.textContent = 'Creating Account...';
+      signupError.textContent = '';
+      
+      try {
+        // Create user account
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Update user profile with name
+        await updateProfile(user, {
+          displayName: name
+        });
+
+        // Store user data in Firestore
+        await setDoc(firestoreDoc(db, 'users', user.uid), {
+          name: name,
+          email: email,
+          createdAt: Timestamp.now()
+        });
+
+        // Close modal and reset
+        signupModal.style.display = 'none';
+        modalSignupForm.reset();
+        
+        // Show success message (optional)
+        alert('Account created successfully! You can now leave comments.');
+      } catch (error) {
+        console.error('Signup error:', error);
+        
+        let message = 'Failed to create account. Please try again.';
+        if (error.code === 'auth/email-already-in-use') {
+          message = 'This email is already registered. Please log in instead.';
+        } else if (error.code === 'auth/invalid-email') {
+          message = 'Invalid email address.';
+        } else if (error.code === 'auth/weak-password') {
+          message = 'Password is too weak. Please use a stronger password.';
+        }
+        
+        signupError.textContent = message;
+        modalSignupButton.disabled = false;
+        modalSignupButton.textContent = 'Create Account';
       }
     });
 

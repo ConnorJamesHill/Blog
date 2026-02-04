@@ -337,4 +337,13 @@
   .share-button {
     justify-content: center;
   }
+
+  .comment-login-prompt div {
+    flex-direction: column;
+  }
+
+  .comment-login-prompt .secondary-button,
+  .comment-login-prompt .primary-button {
+    width: 100%;
+  }
 }
