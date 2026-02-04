@@ -173,8 +173,21 @@
             Subscribe to Newsletter
           </button>
         </div>
+
+        <!-- Comments Section -->
+        <div id="postComments" class="post-comments-section" data-post-id="swiftui-onboarding-flows">
+          <h3 style="margin: 0 0 8px 0; color: var(--text-primary);">
+            Comments (<span id="commentsCount">0</span>)
+          </h3>
+          <p class="muted" style="margin-bottom: 24px;">Share your thoughts and experiences with this topic.</p>
+          
+          <div id="commentFormContainer"></div>
+          <div id="commentsList" class="comment-list"></div>
+        </div>
       </div>
     </article>
+
+    <script type="module" src="../js/post-comments.js"></script>
 
     <footer class="footer">
       <div class="footer-content">

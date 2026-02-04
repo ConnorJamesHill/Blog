@@ -357,7 +357,7 @@ body {
 /* Blog post list styles */
 #blogPostsList {
   display: grid;
-  gap: 32px;
+  gap: 24px;
 }
 
 .blog-post-item {
@@ -365,6 +365,12 @@ body {
   padding: 32px;
   border-radius: 24px;
   box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blog-post-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.12);
 }
 
 .blog-post-header {
@@ -378,25 +384,6 @@ body {
 .blog-post-header h3 a:hover {
   color: var(--accent) !important;
   transition: color 0.2s ease;
-}
-
-.post-comments {
-  margin-top: 32px;
-  padding-top: 32px;
-  border-top: 1px solid var(--border);
-}
-
-.comment-login-prompt {
-  padding: 20px;
-  background: var(--surface-muted);
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.comment-login-prompt .link-button {
-  padding: 0;
-  text-decoration: underline;
 }
 
 .project-tags {
