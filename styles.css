@@ -656,29 +656,24 @@ body {
 
 .join-card {
   display: grid;
-  gap: 0;
+  gap: 12px;
 }
 
 .join-card h3 {
   font-size: 22px;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .join-card > p {
   line-height: 1.6;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
-#signupStep {
-  display: grid;
-  gap: 12px;
-}
-
-#signupStep input {
+.join-card input {
   margin-bottom: 0;
 }
 
-#signupStep button {
+.join-card button[type="submit"] {
   margin-top: 12px;
 }
 

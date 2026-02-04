@@ -219,24 +219,10 @@
               <p>
                 Create an account to follow along with new iOS tutorials and app releases.
               </p>
-              <div id="signupStep">
-                <input type="text" name="fullName" id="joinFullName" placeholder="Full name" required />
-                <input type="email" name="email" id="joinEmail" placeholder="Email address" required />
-                <input type="password" name="password" id="joinPassword" placeholder="Create password (min 6 characters)" required minlength="6" />
-                <button class="primary-button" type="submit">Create Account</button>
-              </div>
-              <div id="verificationStep" style="display: none;">
-                <h4>Check Your Email</h4>
-                <p style="color: var(--text-secondary); font-size: 14px;">
-                  We sent a 6-digit verification code to <strong id="verifyEmail"></strong>
-                </p>
-                <input type="text" id="verificationCode" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" required style="text-align: center; font-size: 24px; font-weight: 600; letter-spacing: 8px;" />
-                <button class="primary-button" type="button" id="verifyCodeBtn">Verify & Complete</button>
-                <div style="display: flex; gap: 8px;">
-                  <button class="secondary-button" type="button" id="resendCodeBtn" style="flex: 1;">Resend Code</button>
-                  <button class="ghost-button" type="button" id="cancelVerificationBtn" style="flex: 1;">Cancel</button>
-                </div>
-              </div>
+              <input type="text" name="fullName" id="joinFullName" placeholder="Full name" required />
+              <input type="email" name="email" id="joinEmail" placeholder="Email address" required />
+              <input type="password" name="password" id="joinPassword" placeholder="Create password (min 6 characters)" required minlength="6" />
+              <button class="primary-button" type="submit">Create Account</button>
               <div class="form-message" id="joinMessage" role="status"></div>
               <p class="form-note">
                 <small>No spam. Unsubscribe anytime.</small>
@@ -508,7 +494,10 @@
       // Save preferences
       document.getElementById('savePreferencesBtn').addEventListener('click', async () => {
         const user = auth.currentUser;
-        if (!user) return;
+        if (!user) {
+          console.error('No user logged in');
+          return;
+        }
 
         const preferencesMessage = document.getElementById('preferencesMessage');
         preferencesMessage.textContent = 'Saving...';
@@ -525,10 +514,12 @@
             weeklyDigest: document.getElementById('prefWeeklyDigest').checked
           };
 
+          console.log('Saving preferences for user:', user.uid, preferences);
           await updateDoc(doc(db, 'users', user.uid), {
             emailPreferences: preferences
           });
 
+          console.log('Preferences saved successfully');
           preferencesMessage.textContent = '✓ Preferences saved successfully';
           preferencesMessage.style.color = 'var(--accent)';
           
@@ -537,7 +528,7 @@
           }, 3000);
         } catch (error) {
           console.error('Error saving preferences:', error);
-          preferencesMessage.textContent = 'Error saving preferences';
+          preferencesMessage.textContent = `Error: ${error.message}`;
           preferencesMessage.style.color = '#dc3545';
         }
       });
@@ -545,7 +536,10 @@
       // Send password reset email
       document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
         const user = auth.currentUser;
-        if (!user) return;
+        if (!user) {
+          console.error('No user logged in');
+          return;
+        }
 
         const passwordMessage = document.getElementById('passwordMessage');
         passwordMessage.textContent = 'Sending email...';
@@ -554,8 +548,10 @@
         try {
           const { sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
           
+          console.log('Sending password reset email to:', user.email);
           await sendPasswordResetEmail(auth, user.email);
           
+          console.log('Password reset email sent successfully');
           passwordMessage.textContent = '✓ Password reset email sent! Check your inbox.';
           passwordMessage.style.color = 'var(--accent)';
           
@@ -564,7 +560,7 @@
           }, 5000);
         } catch (error) {
           console.error('Error sending password reset email:', error);
-          passwordMessage.textContent = 'Error sending email. Please try again.';
+          passwordMessage.textContent = `Error: ${error.message}`;
           passwordMessage.style.color = '#dc3545';
         }
       });
@@ -572,7 +568,10 @@
       // Delete account
       document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
         const user = auth.currentUser;
-        if (!user) return;
+        if (!user) {
+          console.error('No user logged in');
+          return;
+        }
 
         const confirmDelete = confirm(
           'Are you sure you want to delete your account?\n\n' +
@@ -595,12 +594,15 @@
         }
 
         try {
+          console.log('Starting account deletion for user:', user.uid);
           const { db } = await import('./js/firebase-config.js');
           const { collection, query, where, getDocs, deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
           const { deleteUser } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
           
           // Delete all user comments across all posts
+          console.log('Deleting user comments...');
           const postsSnapshot = await getDocs(collection(db, 'posts'));
+          let deletedComments = 0;
           for (const postDoc of postsSnapshot.docs) {
             const commentsQuery = query(
               collection(db, 'posts', postDoc.id, 'comments'),
@@ -609,15 +611,20 @@
             const commentsSnapshot = await getDocs(commentsQuery);
             for (const commentDoc of commentsSnapshot.docs) {
               await deleteDoc(doc(db, 'posts', postDoc.id, 'comments', commentDoc.id));
+              deletedComments++;
             }
           }
+          console.log(`Deleted ${deletedComments} comments`);
 
           // Delete user document
+          console.log('Deleting user document...');
           await deleteDoc(doc(db, 'users', user.uid));
 
           // Delete Firebase auth account
+          console.log('Deleting Firebase auth account...');
           await deleteUser(user);
 
+          console.log('Account deletion complete');
           alert('Your account has been successfully deleted.');
           window.location.href = 'index.html';
         } catch (error) {
@@ -625,7 +632,7 @@
           if (error.code === 'auth/requires-recent-login') {
             alert('For security reasons, please log out and log back in before deleting your account.');
           } else {
-            alert('Error deleting account. Please try again or contact support.');
+            alert(`Error deleting account: ${error.message}\n\nPlease check the console for details or contact support.`);
           }
         }
       });
