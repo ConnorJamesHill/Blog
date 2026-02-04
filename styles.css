@@ -111,6 +111,24 @@ body {
   transform: translateY(-1px);
 }
 
+.logout-button {
+  border-radius: 999px;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #dc3545;
+  color: white;
+  box-shadow: 0 12px 30px rgba(220, 53, 69, 0.35);
+}
+
+.logout-button:hover {
+  transform: translateY(-1px);
+  background: #c82333;
+  box-shadow: 0 16px 40px rgba(220, 53, 69, 0.45);
+}
+
 .hero-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
