@@ -22,6 +22,7 @@
       <div class="nav-actions">
         <button class="ghost-button" type="button" onclick="window.location.href='index.html#settings'">Subscribe</button>
         <button class="secondary-button" type="button" onclick="window.location.href='index.html'">Back to Blog</button>
+        <button class="secondary-button" type="button" id="adminPanelBtn" style="display: none;" onclick="window.location.href='admin.html'">Admin Panel</button>
         <button class="primary-button" type="button" id="loginBtn">Log In</button>
       </div>
     </nav>
@@ -142,6 +143,7 @@
 
     // Authentication UI - Login
     const loginBtn = document.getElementById('loginBtn');
+    const adminPanelBtn = document.getElementById('adminPanelBtn');
     const loginModal = document.getElementById('loginModal');
     const closeModal = document.getElementById('closeModal');
     const modalLoginForm = document.getElementById('modalLoginForm');
@@ -164,34 +166,35 @@
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
       if (user) {
-        if (isAdmin(user)) {
-          // Admin user - show Admin Panel button
-          loginBtn.textContent = 'Admin Panel';
-          loginBtn.classList.remove('logout-button');
-          loginBtn.classList.add('primary-button');
-          loginBtn.onclick = () => window.location.href = 'admin.html';
-        } else {
-          // Regular user - show Log Out button
-          loginBtn.textContent = 'Log Out';
-          loginBtn.classList.remove('primary-button');
-          loginBtn.classList.add('logout-button');
-          loginBtn.onclick = async () => {
-            if (confirm('Are you sure you want to log out?')) {
-              try {
-                await signOut(auth);
-                // Button will update automatically via onAuthStateChanged
-              } catch (error) {
-                console.error('Logout error:', error);
-                alert('Failed to log out. Please try again.');
-              }
+        // Any logged-in user - show red Log Out button
+        loginBtn.textContent = 'Log Out';
+        loginBtn.classList.remove('primary-button');
+        loginBtn.classList.add('logout-button');
+        loginBtn.onclick = async () => {
+          if (confirm('Are you sure you want to log out?')) {
+            try {
+              await signOut(auth);
+              // Button will update automatically via onAuthStateChanged
+            } catch (error) {
+              console.error('Logout error:', error);
+              alert('Failed to log out. Please try again.');
             }
-          };
+          }
+        };
+
+        // Show admin panel button if user is admin
+        if (isAdmin(user)) {
+          adminPanelBtn.style.display = 'block';
+        } else {
+          adminPanelBtn.style.display = 'none';
         }
       } else {
+        // Not logged in - show blue Log In button
         loginBtn.textContent = 'Log In';
         loginBtn.classList.remove('logout-button');
         loginBtn.classList.add('primary-button');
         loginBtn.onclick = () => loginModal.style.display = 'flex';
+        adminPanelBtn.style.display = 'none';
       }
       
       // Update comment form visibility
