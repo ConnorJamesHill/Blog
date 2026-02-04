@@ -276,13 +276,28 @@ body {
   margin-bottom: 12px;
 }
 
+.project-icon-link {
+  display: inline-block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-icon-link:hover {
+  transform: translateY(-4px);
+}
+
 .project-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 80px;
+  height: 80px;
+  border-radius: 18px;
   margin-bottom: 16px;
   object-fit: cover;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.project-icon-link:hover .project-icon {
+  box-shadow: 0 15px 35px rgba(53, 121, 255, 0.3);
 }
 
 .post-card p,
