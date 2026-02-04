@@ -742,4 +742,9 @@ body {
   .blog-post-header h3 {
     font-size: 20px;
   }
+
+  .blog-post-header .primary-button {
+    width: 100%;
+    justify-content: center;
+  }
 }

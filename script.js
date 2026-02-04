@@ -29,7 +29,10 @@ const renderBlogPosts = async () => {
               <span class="muted">${post.readTime}</span>
             </div>
           </div>
-          <a href="${post.url}" class="link-button">Read Post</a>
+          <a href="${post.url}" class="primary-button" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            Read Post
+            <span style="font-size: 18px;">→</span>
+          </a>
         </div>
         <p style="color: var(--text-secondary); margin: 16px 0;">${post.excerpt}</p>
       </article>
