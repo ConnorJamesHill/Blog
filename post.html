@@ -410,6 +410,7 @@
             await addDoc(collection(db, 'posts', postId, 'comments'), {
               name: name,
               comment: comment,
+              userId: currentUser.uid,
               timestamp: Timestamp.now(),
               date: new Date().toLocaleDateString('en-US', { 
                 month: 'short', 
