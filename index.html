@@ -60,34 +60,15 @@
       <section class="tab-panel active" id="blogs">
         <div class="panel-header">
           <div>
-            <h2>Latest Blog Posts</h2>
+            <h2>All Blog Posts</h2>
             <p class="muted">
               Deep dives, quick tips, and lessons from building iOS products.
             </p>
           </div>
-          <button class="filter-pill">All Posts</button>
         </div>
 
-        <div class="content-grid">
-          <!-- Blog posts will be dynamically inserted here by script.js -->
-        </div>
-
-        <div class="comments">
-          <h3>Community Comments</h3>
-          <p class="muted">
-            Join the discussion by leaving feedback or questions on any post.
-          </p>
-          <form class="comment-form">
-            <input type="text" name="name" placeholder="Your name" required />
-            <textarea
-              name="comment"
-              rows="4"
-              placeholder="Share your thoughts..."
-              required
-            ></textarea>
-            <button class="primary-button" type="submit">Post Comment</button>
-          </form>
-          <div class="comment-list" id="commentList"></div>
+        <div id="blogPostsList">
+          <!-- Blog posts with comments will be dynamically inserted here -->
         </div>
       </section>
 
