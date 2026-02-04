@@ -241,6 +241,10 @@
   margin: 0 0 32px 0;
 }
 
+#commentFormContainer {
+  margin-bottom: 32px;
+}
+
 .comment-form textarea {
   border-radius: 14px;
   border: 1px solid var(--border);
@@ -269,11 +273,20 @@
 }
 
 .comment-login-prompt {
-  padding: 24px;
+  padding: 32px;
   background: var(--surface-muted);
   border-radius: 16px;
   text-align: center;
   margin-bottom: 32px;
+}
+
+.comment-login-prompt h4 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.comment-login-prompt p {
+  margin: 0;
 }
 
 .comment-login-prompt .link-button {
