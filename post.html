@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loading... - Code Journey</title>
+    <title>Loading... - Connor Hill's Blog</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="post-styles.css">
 </head>
@@ -14,7 +14,7 @@
         <a href="index.html" class="brand-link">
           <span class="brand-mark"></span>
           <div class="brand-text">
-            <p class="brand-title">Code Journey</p>
+            <p class="brand-title">Connor Hill</p>
             <p class="brand-subtitle">iOS Developer · Blog & Portfolio</p>
           </div>
         </a>
@@ -22,9 +22,36 @@
       <div class="nav-actions">
         <button class="ghost-button" type="button" onclick="window.location.href='index.html#settings'">Subscribe</button>
         <button class="secondary-button" type="button" onclick="window.location.href='index.html'">Back to Blog</button>
+        <button class="primary-button" type="button" id="loginBtn">Log In</button>
       </div>
     </nav>
   </header>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🔐 Admin Login</h2>
+        <span class="close-modal" id="closeModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="loginError" class="login-error"></div>
+        <form id="modalLoginForm">
+          <div class="modal-form-group">
+            <label for="modalEmail">Email</label>
+            <input type="email" id="modalEmail" required placeholder="your@email.com" autocomplete="email">
+          </div>
+          <div class="modal-form-group">
+            <label for="modalPassword">Password</label>
+            <input type="password" id="modalPassword" required placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <button type="submit" class="primary-button" id="modalLoginButton" style="width: 100%;">
+            Sign In
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <article class="post-content" id="postContent">
     <div style="text-align: center; padding: 100px 40px; color: var(--text-secondary);">
@@ -35,9 +62,9 @@
   <footer class="footer">
     <div class="footer-content">
       <div>
-        <p class="footer-title">Code Journey</p>
+        <p class="footer-title">Connor Hill's Blog</p>
         <p>© 2026 Connor Hill. All rights reserved.</p>
-        <p class="footer-subtitle">Building delightful iOS experiences.</p>
+        <p class="footer-subtitle">Building awesome iOS experiences.</p>
       </div>
       <div class="footer-links">
         <div class="footer-section">
@@ -59,12 +86,126 @@
   </footer>
 
   <script type="module">
-    import { db } from './js/firebase-config.js';
+    import { db, auth } from './js/firebase-config.js';
     import { doc as firestoreDoc, getDoc, collection, addDoc, query, orderBy, getDocs, Timestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
     // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
+
+    // Track current user
+    let currentUser = null;
+
+    // Authentication UI
+    const loginBtn = document.getElementById('loginBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalLoginForm = document.getElementById('modalLoginForm');
+    const modalLoginButton = document.getElementById('modalLoginButton');
+    const loginError = document.getElementById('loginError');
+
+    // Check authentication state
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      if (user) {
+        loginBtn.textContent = 'Admin Panel';
+        loginBtn.onclick = () => window.location.href = 'admin.html';
+      } else {
+        loginBtn.textContent = 'Log In';
+        loginBtn.onclick = () => loginModal.style.display = 'flex';
+      }
+      
+      // Update comment form visibility
+      updateCommentFormVisibility();
+    });
+
+    // Open modal
+    loginBtn.addEventListener('click', () => {
+      if (loginBtn.textContent === 'Admin Panel') {
+        window.location.href = 'admin.html';
+      } else {
+        loginModal.style.display = 'flex';
+      }
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+      loginModal.style.display = 'none';
+      loginError.textContent = '';
+      modalLoginForm.reset();
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        loginModal.style.display = 'none';
+        loginError.textContent = '';
+        modalLoginForm.reset();
+      }
+    });
+
+    // Handle login
+    modalLoginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('modalEmail').value;
+      const password = document.getElementById('modalPassword').value;
+      
+      modalLoginButton.disabled = true;
+      modalLoginButton.textContent = 'Signing in...';
+      loginError.textContent = '';
+      
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        loginModal.style.display = 'none';
+        modalLoginForm.reset();
+      } catch (error) {
+        console.error('Login error:', error);
+        
+        let message = 'Login failed. Please check your credentials.';
+        if (error.code === 'auth/user-not-found') {
+          message = 'No account found with this email.';
+        } else if (error.code === 'auth/wrong-password') {
+          message = 'Incorrect password.';
+        } else if (error.code === 'auth/invalid-email') {
+          message = 'Invalid email address.';
+        } else if (error.code === 'auth/too-many-requests') {
+          message = 'Too many failed attempts. Try again later.';
+        } else if (error.code === 'auth/invalid-credential') {
+          message = 'Invalid credentials. Please check your email and password.';
+        }
+        
+        loginError.textContent = message;
+        modalLoginButton.disabled = false;
+        modalLoginButton.textContent = 'Sign In';
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && loginModal.style.display === 'flex') {
+        loginModal.style.display = 'none';
+        loginError.textContent = '';
+        modalLoginForm.reset();
+      }
+    });
+
+    // Update comment form visibility based on auth state
+    function updateCommentFormVisibility() {
+      const commentFormContainer = document.getElementById('commentFormContainer');
+      const loginPrompt = document.getElementById('loginPrompt');
+      
+      if (!commentFormContainer || !loginPrompt) return;
+      
+      if (currentUser) {
+        commentFormContainer.style.display = 'block';
+        loginPrompt.style.display = 'none';
+      } else {
+        commentFormContainer.style.display = 'none';
+        loginPrompt.style.display = 'block';
+      }
+    }
 
     // Comment functionality
     function initComments(postId) {
@@ -75,38 +216,45 @@
       loadComments(postId);
 
       // Handle comment submission
-      commentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData(commentForm);
-        const name = formData.get('name').toString().trim();
-        const comment = formData.get('comment').toString().trim();
+      if (commentForm) {
+        commentForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          if (!currentUser) {
+            alert('Please log in to post a comment.');
+            return;
+          }
+          
+          const formData = new FormData(commentForm);
+          const name = formData.get('name').toString().trim();
+          const comment = formData.get('comment').toString().trim();
 
-        if (!name || !comment) return;
+          if (!name || !comment) return;
 
-        try {
-          // Add comment to Firestore
-          await addDoc(collection(db, 'posts', postId, 'comments'), {
-            name: name,
-            comment: comment,
-            timestamp: Timestamp.now(),
-            date: new Date().toLocaleDateString('en-US', { 
-              month: 'short', 
-              day: 'numeric', 
-              year: 'numeric' 
-            })
-          });
+          try {
+            // Add comment to Firestore
+            await addDoc(collection(db, 'posts', postId, 'comments'), {
+              name: name,
+              comment: comment,
+              timestamp: Timestamp.now(),
+              date: new Date().toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+              })
+            });
 
-          // Clear form
-          commentForm.reset();
+            // Clear form
+            commentForm.reset();
 
-          // Reload comments
-          await loadComments(postId);
-        } catch (error) {
-          console.error('Error posting comment:', error);
-          alert('Failed to post comment. Please try again.');
-        }
-      });
+            // Reload comments
+            await loadComments(postId);
+          } catch (error) {
+            console.error('Error posting comment:', error);
+            alert('Failed to post comment. Please try again.');
+          }
+        });
+      }
     }
 
     async function loadComments(postId) {
@@ -166,7 +314,7 @@
         }
 
         const post = docSnap.data();
-        document.title = post.title + ' - Code Journey';
+        document.title = post.title + ' - Connor Hill\'s Blog';
 
         const postContent = document.getElementById('postContent');
         const currentUrl = window.location.href;
@@ -230,18 +378,32 @@
               Share your thoughts, questions, or feedback about this post.
             </p>
             
-            <form class="comment-form" id="commentForm">
-              <input type="text" name="name" placeholder="Your name" required style="border-radius: 14px; border: 1px solid var(--border); padding: 12px 16px; font-size: 16px; background: var(--surface);" />
-              <textarea
-                name="comment"
-                rows="4"
-                placeholder="Share your thoughts..."
-                required
-              ></textarea>
-              <button class="primary-button" type="submit" style="justify-self: start;">
-                Post Comment
+            <!-- Login prompt for non-authenticated users -->
+            <div id="loginPrompt" class="comment-login-prompt" style="display: none;">
+              <h4 style="margin-bottom: 12px; color: var(--text-primary);">🔒 Login Required</h4>
+              <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                Please log in to leave a comment and join the discussion.
+              </p>
+              <button class="primary-button" onclick="document.getElementById('loginBtn').click()">
+                Log In to Comment
               </button>
-            </form>
+            </div>
+            
+            <!-- Comment form (only visible when logged in) -->
+            <div id="commentFormContainer" style="display: none;">
+              <form class="comment-form" id="commentForm">
+                <input type="text" name="name" placeholder="Your name" required style="border-radius: 14px; border: 1px solid var(--border); padding: 12px 16px; font-size: 16px; background: var(--surface);" />
+                <textarea
+                  name="comment"
+                  rows="4"
+                  placeholder="Share your thoughts..."
+                  required
+                ></textarea>
+                <button class="primary-button" type="submit" style="justify-self: start;">
+                  Post Comment
+                </button>
+              </form>
+            </div>
             
             <div class="comment-list" id="commentList">
               <!-- Comments will be loaded here -->
