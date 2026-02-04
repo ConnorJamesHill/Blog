@@ -214,7 +214,7 @@
         <div class="settings-grid">
           <form class="card join-card" id="joinForm">
             <h3>Subscribe</h3>
-            <p style="margin-bottom: 20px;">
+            <p>
               Create an account to follow along with new iOS tutorials and app releases.
             </p>
             <div id="signupStep">
@@ -224,13 +224,13 @@
               <button class="primary-button" type="submit">Create Account</button>
             </div>
             <div id="verificationStep" style="display: none;">
-              <h4 style="margin: 0 0 8px 0; color: var(--text-primary);">Check Your Email</h4>
-              <p style="margin: 0 0 16px 0; color: var(--text-secondary); font-size: 14px;">
+              <h4>Check Your Email</h4>
+              <p style="color: var(--text-secondary); font-size: 14px;">
                 We sent a 6-digit verification code to <strong id="verifyEmail"></strong>
               </p>
               <input type="text" id="verificationCode" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" required style="text-align: center; font-size: 24px; font-weight: 600; letter-spacing: 8px;" />
               <button class="primary-button" type="button" id="verifyCodeBtn">Verify & Complete</button>
-              <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <div style="display: flex; gap: 8px;">
                 <button class="secondary-button" type="button" id="resendCodeBtn" style="flex: 1;">Resend Code</button>
                 <button class="ghost-button" type="button" id="cancelVerificationBtn" style="flex: 1;">Cancel</button>
               </div>
