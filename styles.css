@@ -361,6 +361,27 @@ body {
   background: var(--surface);
 }
 
+.join-card input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#verificationCode {
+  font-family: 'SF Mono', 'Courier New', monospace;
+}
+
+#verificationStep {
+  text-align: center;
+}
+
+#verificationStep h4 {
+  margin: 0 0 8px 0;
+}
+
+#verificationStep input {
+  margin: 8px 0;
+}
+
 .comment-list {
   display: grid;
   gap: 12px;

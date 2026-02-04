@@ -76,19 +76,207 @@ window.addEventListener('hashchange', () => {
 });
 
 
-joinForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const formData = new FormData(joinForm);
-  const email = formData.get("email").toString().trim();
+// Newsletter signup with email verification
+let pendingSignup = null;
 
-  if (!email) {
-    joinMessage.textContent = "Please add a valid email address.";
+joinForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  
+  const fullName = document.getElementById("joinFullName").value.trim();
+  const email = document.getElementById("joinEmail").value.trim();
+  const password = document.getElementById("joinPassword").value;
+
+  if (!fullName || !email || !password) {
+    joinMessage.textContent = "Please fill in all fields.";
+    joinMessage.style.color = "var(--text-secondary)";
     return;
   }
 
-  joinMessage.textContent =
-    "Thanks for joining! Check your inbox to confirm within 24 hours.";
-  joinForm.reset();
+  if (password.length < 6) {
+    joinMessage.textContent = "Password must be at least 6 characters.";
+    joinMessage.style.color = "var(--text-secondary)";
+    return;
+  }
+
+  try {
+    // Generate 6-digit verification code
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Store verification data in Firestore
+    const { db } = await import('./js/firebase-config.js');
+    const { setDoc, doc, Timestamp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    
+    // Note: We store the password temporarily in memory, not in Firestore for security
+    await setDoc(doc(db, 'verificationCodes', email), {
+      code: verificationCode,
+      fullName: fullName,
+      email: email,
+      timestamp: Timestamp.now(),
+      expiresAt: Timestamp.fromMillis(Date.now() + 15 * 60 * 1000) // 15 minutes
+    });
+
+    // Send verification email
+    // TODO: In production, use Cloud Functions to send email via SendGrid/similar
+    console.log(`📧 Verification code for ${email}: ${verificationCode}`);
+    alert(`For demo purposes, your verification code is: ${verificationCode}\n\nIn production, this would be sent to your email.`);
+
+    // Store pending signup data
+    pendingSignup = { fullName, email, password };
+
+    // Show verification step
+    document.getElementById("signupStep").style.display = "none";
+    document.getElementById("verificationStep").style.display = "block";
+    document.getElementById("verifyEmail").textContent = email;
+    joinMessage.textContent = "Code sent! Check your email.";
+    joinMessage.style.color = "var(--accent)";
+  } catch (error) {
+    console.error("Error sending verification code:", error);
+    joinMessage.textContent = "Error sending code. Please try again.";
+    joinMessage.style.color = "#dc3545";
+  }
+});
+
+// Verify code and create account
+document.getElementById("verifyCodeBtn").addEventListener("click", async () => {
+  const enteredCode = document.getElementById("verificationCode").value.trim();
+  
+  if (!enteredCode || enteredCode.length !== 6) {
+    joinMessage.textContent = "Please enter a valid 6-digit code.";
+    joinMessage.style.color = "var(--text-secondary)";
+    return;
+  }
+
+  if (!pendingSignup) {
+    joinMessage.textContent = "Error: No pending signup found.";
+    joinMessage.style.color = "#dc3545";
+    return;
+  }
+
+  try {
+    const { db, auth } = await import('./js/firebase-config.js');
+    const { getDoc, doc, deleteDoc, setDoc, Timestamp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    const { createUserWithEmailAndPassword, updateProfile } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    
+    // Verify code from Firestore
+    const verificationDoc = await getDoc(doc(db, 'verificationCodes', pendingSignup.email));
+    
+    if (!verificationDoc.exists()) {
+      joinMessage.textContent = "Verification code expired. Please try again.";
+      joinMessage.style.color = "#dc3545";
+      return;
+    }
+
+    const verificationData = verificationDoc.data();
+    
+    // Check if code expired
+    if (verificationData.expiresAt.toMillis() < Date.now()) {
+      await deleteDoc(doc(db, 'verificationCodes', pendingSignup.email));
+      joinMessage.textContent = "Verification code expired. Please try again.";
+      joinMessage.style.color = "#dc3545";
+      return;
+    }
+
+    // Check if code matches
+    if (verificationData.code !== enteredCode) {
+      joinMessage.textContent = "Invalid code. Please try again.";
+      joinMessage.style.color = "#dc3545";
+      return;
+    }
+
+    // Code is valid - create account
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      pendingSignup.email,
+      pendingSignup.password
+    );
+
+    // Update profile with name
+    await updateProfile(userCredential.user, {
+      displayName: pendingSignup.fullName
+    });
+
+    // Store user data in Firestore
+    await setDoc(doc(db, 'users', userCredential.user.uid), {
+      name: pendingSignup.fullName,
+      email: pendingSignup.email,
+      createdAt: Timestamp.now(),
+      subscribedToNewsletter: true
+    });
+
+    // Delete verification code
+    await deleteDoc(doc(db, 'verificationCodes', pendingSignup.email));
+
+    // Success!
+    joinMessage.textContent = "✅ Account created! You're now logged in.";
+    joinMessage.style.color = "var(--accent)";
+    
+    // Reset form after delay
+    setTimeout(() => {
+      document.getElementById("signupStep").style.display = "block";
+      document.getElementById("verificationStep").style.display = "none";
+      joinForm.reset();
+      document.getElementById("verificationCode").value = "";
+      pendingSignup = null;
+    }, 2000);
+
+  } catch (error) {
+    console.error("Error creating account:", error);
+    
+    let message = "Error creating account. Please try again.";
+    if (error.code === 'auth/email-already-in-use') {
+      message = "This email is already registered. Please log in instead.";
+    } else if (error.code === 'auth/weak-password') {
+      message = "Password is too weak. Please use a stronger password.";
+    }
+    
+    joinMessage.textContent = message;
+    joinMessage.style.color = "#dc3545";
+  }
+});
+
+// Resend verification code
+document.getElementById("resendCodeBtn").addEventListener("click", async () => {
+  if (!pendingSignup) {
+    joinMessage.textContent = "Error: No pending signup found.";
+    joinMessage.style.color = "#dc3545";
+    return;
+  }
+
+  try {
+    // Generate new code
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    const { db } = await import('./js/firebase-config.js');
+    const { setDoc, doc, Timestamp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    
+    await setDoc(doc(db, 'verificationCodes', pendingSignup.email), {
+      code: verificationCode,
+      fullName: pendingSignup.fullName,
+      email: pendingSignup.email,
+      timestamp: Timestamp.now(),
+      expiresAt: Timestamp.fromMillis(Date.now() + 15 * 60 * 1000)
+    });
+
+    // Send new code
+    console.log(`📧 New verification code for ${pendingSignup.email}: ${verificationCode}`);
+    alert(`New verification code: ${verificationCode}\n\nIn production, this would be sent to your email.`);
+
+    joinMessage.textContent = "New code sent!";
+    joinMessage.style.color = "var(--accent)";
+  } catch (error) {
+    console.error("Error resending code:", error);
+    joinMessage.textContent = "Error sending code. Please try again.";
+    joinMessage.style.color = "#dc3545";
+  }
+});
+
+// Cancel verification and go back
+document.getElementById("cancelVerificationBtn").addEventListener("click", () => {
+  document.getElementById("signupStep").style.display = "block";
+  document.getElementById("verificationStep").style.display = "none";
+  document.getElementById("verificationCode").value = "";
+  pendingSignup = null;
+  joinMessage.textContent = "";
 });
 
 
