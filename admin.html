@@ -254,7 +254,7 @@
   </div>
 
   <script type="module">
-    import { auth, db } from './js/firebase-config.js';
+    import { auth, db, isAdmin } from './js/firebase-config.js';
     import { 
       signOut,
       onAuthStateChanged
@@ -274,11 +274,17 @@
     // Track if we're editing a post
     let editingPostId = null;
 
-    // Auth check
+    // Auth check - only allow admin access
     onAuthStateChanged(auth, (user) => {
       if (!user) {
+        // Not logged in - redirect to login
         window.location.href = 'admin-login.html';
+      } else if (!isAdmin(user)) {
+        // Logged in but not admin - redirect to main page with alert
+        alert('Access denied. Admin privileges required.');
+        window.location.href = 'index.html';
       } else {
+        // Logged in as admin - allow access
         document.getElementById('userEmail').textContent = user.email;
         loadPosts();
       }

@@ -155,7 +155,7 @@
   </div>
 
   <script type="module">
-    import { auth } from './js/firebase-config.js';
+    import { auth, isAdmin } from './js/firebase-config.js';
     import { 
       signInWithEmailAndPassword,
       onAuthStateChanged
@@ -165,10 +165,14 @@
     const loginButton = document.getElementById('loginButton');
     const errorMessage = document.getElementById('errorMessage');
 
-    // Check if already logged in
+    // Check if already logged in as admin
     onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user && isAdmin(user)) {
+        // Already logged in as admin - redirect to admin panel
         window.location.href = 'admin.html';
+      } else if (user && !isAdmin(user)) {
+        // Logged in but not admin - sign them out
+        // They shouldn't be on this page
       }
     });
 
@@ -183,8 +187,21 @@
       errorMessage.classList.remove('show');
       
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        // onAuthStateChanged will redirect to admin.html
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Check if user is admin
+        if (!isAdmin(user)) {
+          // Not an admin - show error and sign out
+          errorMessage.textContent = 'Access denied. Admin privileges required.';
+          errorMessage.classList.add('show');
+          loginButton.disabled = false;
+          loginButton.textContent = 'Sign In';
+          await auth.signOut();
+          return;
+        }
+        
+        // Is admin - onAuthStateChanged will redirect to admin.html
       } catch (error) {
         console.error('Login error:', error);
         
@@ -197,6 +214,8 @@
           message = 'Invalid email address.';
         } else if (error.code === 'auth/too-many-requests') {
           message = 'Too many failed attempts. Try again later.';
+        } else if (error.code === 'auth/invalid-credential') {
+          message = 'Invalid credentials. Please check your email and password.';
         }
         
         errorMessage.textContent = message;

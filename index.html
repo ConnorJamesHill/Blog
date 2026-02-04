@@ -319,7 +319,7 @@
 
     <script src="script.js"></script>
     <script type="module">
-      import { auth } from './js/firebase-config.js';
+      import { auth, isAdmin } from './js/firebase-config.js';
       import { 
         signInWithEmailAndPassword,
         onAuthStateChanged,
@@ -336,20 +336,29 @@
       // Check if already logged in
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          loginBtn.textContent = 'Log Out';
-          loginBtn.classList.remove('primary-button');
-          loginBtn.classList.add('logout-button');
-          loginBtn.onclick = async () => {
-            if (confirm('Are you sure you want to log out?')) {
-              try {
-                await signOut(auth);
-                // Button will update automatically via onAuthStateChanged
-              } catch (error) {
-                console.error('Logout error:', error);
-                alert('Failed to log out. Please try again.');
+          if (isAdmin(user)) {
+            // Admin user - show Admin Panel button
+            loginBtn.textContent = 'Admin Panel';
+            loginBtn.classList.remove('logout-button');
+            loginBtn.classList.add('primary-button');
+            loginBtn.onclick = () => window.location.href = 'admin.html';
+          } else {
+            // Regular user - show Log Out button
+            loginBtn.textContent = 'Log Out';
+            loginBtn.classList.remove('primary-button');
+            loginBtn.classList.add('logout-button');
+            loginBtn.onclick = async () => {
+              if (confirm('Are you sure you want to log out?')) {
+                try {
+                  await signOut(auth);
+                  // Button will update automatically via onAuthStateChanged
+                } catch (error) {
+                  console.error('Logout error:', error);
+                  alert('Failed to log out. Please try again.');
+                }
               }
-            }
-          };
+            };
+          }
         } else {
           loginBtn.textContent = 'Log In';
           loginBtn.classList.remove('logout-button');

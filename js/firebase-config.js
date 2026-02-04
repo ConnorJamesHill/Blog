@@ -31,4 +31,13 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-export { app, db, auth, storage };
+// Admin email configuration
+// TODO: Replace with your actual admin email
+const ADMIN_EMAIL = 'hilljamesconnor@gmail.com';
+
+// Helper function to check if user is admin
+function isAdmin(user) {
+  return user && user.email === ADMIN_EMAIL;
+}
+
+export { app, db, auth, storage, isAdmin, ADMIN_EMAIL };
