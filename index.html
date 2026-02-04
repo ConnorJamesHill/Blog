@@ -17,8 +17,8 @@
           </div>
         </div>
         <div class="nav-actions">
-          <button class="ghost-button" type="button">Subscribe</button>
-          <button class="primary-button" type="button">New Post</button>
+          <button class="ghost-button" type="button" onclick="window.location.href='#settings'">Subscribe</button>
+          <button class="primary-button" type="button" id="loginBtn">Log In</button>
         </div>
       </nav>
       <div class="hero-content">
@@ -310,6 +310,125 @@
       </div>
     </footer>
 
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>🔐 Admin Login</h2>
+          <span class="close-modal" id="closeModal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div id="loginError" class="login-error"></div>
+          <form id="modalLoginForm">
+            <div class="modal-form-group">
+              <label for="modalEmail">Email</label>
+              <input type="email" id="modalEmail" required placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div class="modal-form-group">
+              <label for="modalPassword">Password</label>
+              <input type="password" id="modalPassword" required placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button type="submit" class="primary-button" id="modalLoginButton" style="width: 100%;">
+              Sign In
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <script src="script.js"></script>
+    <script type="module">
+      import { auth } from './js/firebase-config.js';
+      import { 
+        signInWithEmailAndPassword,
+        onAuthStateChanged
+      } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+      const loginBtn = document.getElementById('loginBtn');
+      const loginModal = document.getElementById('loginModal');
+      const closeModal = document.getElementById('closeModal');
+      const modalLoginForm = document.getElementById('modalLoginForm');
+      const modalLoginButton = document.getElementById('modalLoginButton');
+      const loginError = document.getElementById('loginError');
+
+      // Check if already logged in
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          loginBtn.textContent = 'Admin Panel';
+          loginBtn.onclick = () => window.location.href = 'admin.html';
+        }
+      });
+
+      // Open modal
+      loginBtn.addEventListener('click', () => {
+        if (loginBtn.textContent === 'Admin Panel') {
+          window.location.href = 'admin.html';
+        } else {
+          loginModal.style.display = 'flex';
+        }
+      });
+
+      // Close modal
+      closeModal.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+        loginError.textContent = '';
+        modalLoginForm.reset();
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+          loginModal.style.display = 'none';
+          loginError.textContent = '';
+          modalLoginForm.reset();
+        }
+      });
+
+      // Handle login
+      modalLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('modalEmail').value;
+        const password = document.getElementById('modalPassword').value;
+        
+        modalLoginButton.disabled = true;
+        modalLoginButton.textContent = 'Signing in...';
+        loginError.textContent = '';
+        
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          loginModal.style.display = 'none';
+          window.location.href = 'admin.html';
+        } catch (error) {
+          console.error('Login error:', error);
+          
+          let message = 'Login failed. Please check your credentials.';
+          if (error.code === 'auth/user-not-found') {
+            message = 'No account found with this email.';
+          } else if (error.code === 'auth/wrong-password') {
+            message = 'Incorrect password.';
+          } else if (error.code === 'auth/invalid-email') {
+            message = 'Invalid email address.';
+          } else if (error.code === 'auth/too-many-requests') {
+            message = 'Too many failed attempts. Try again later.';
+          } else if (error.code === 'auth/invalid-credential') {
+            message = 'Invalid credentials. Please check your email and password.';
+          }
+          
+          loginError.textContent = message;
+          modalLoginButton.disabled = false;
+          modalLoginButton.textContent = 'Sign In';
+        }
+      });
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && loginModal.style.display === 'flex') {
+          loginModal.style.display = 'none';
+          loginError.textContent = '';
+          modalLoginForm.reset();
+        }
+      });
+    </script>
   </body>
 </html>
