@@ -201,6 +201,41 @@
     const switchToSignup = document.getElementById('switchToSignup');
     const switchToLogin = document.getElementById('switchToLogin');
 
+    // Update comment form visibility based on auth state
+    function updateCommentFormVisibility() {
+      const commentFormContainer = document.getElementById('commentFormContainer');
+      const loginPrompt = document.getElementById('loginPrompt');
+      
+      console.log('updateCommentFormVisibility called');
+      console.log('currentUser:', currentUser);
+      console.log('commentFormContainer:', commentFormContainer);
+      console.log('loginPrompt:', loginPrompt);
+      
+      if (!commentFormContainer || !loginPrompt) {
+        console.error('Comment elements not found!');
+        return;
+      }
+      
+      if (currentUser) {
+        console.log('User logged in - showing comment form');
+        commentFormContainer.style.display = 'block';
+        loginPrompt.style.display = 'none';
+        
+        // Pre-fill name field with user's display name and make it read-only
+        const nameInput = document.querySelector('#commentForm input[name="name"]');
+        if (nameInput && currentUser.displayName) {
+          nameInput.value = currentUser.displayName;
+          nameInput.readOnly = true;
+          nameInput.style.backgroundColor = 'var(--surface-muted)';
+          nameInput.style.cursor = 'not-allowed';
+        }
+      } else {
+        console.log('User not logged in - showing subscribe prompt');
+        commentFormContainer.style.display = 'none';
+        loginPrompt.style.display = 'block';
+      }
+    }
+
     // Check authentication state
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
@@ -461,31 +496,6 @@
         forgotPasswordMessage.style.color = '#dc3545';
       }
     });
-
-    // Update comment form visibility based on auth state
-    function updateCommentFormVisibility() {
-      const commentFormContainer = document.getElementById('commentFormContainer');
-      const loginPrompt = document.getElementById('loginPrompt');
-      
-      if (!commentFormContainer || !loginPrompt) return;
-      
-      if (currentUser) {
-        commentFormContainer.style.display = 'block';
-        loginPrompt.style.display = 'none';
-        
-        // Pre-fill name field with user's display name and make it read-only
-        const nameInput = document.querySelector('#commentForm input[name="name"]');
-        if (nameInput && currentUser.displayName) {
-          nameInput.value = currentUser.displayName;
-          nameInput.readOnly = true;
-          nameInput.style.backgroundColor = 'var(--surface-muted)';
-          nameInput.style.cursor = 'not-allowed';
-        }
-      } else {
-        commentFormContainer.style.display = 'none';
-        loginPrompt.style.display = 'block';
-      }
-    }
 
     // Comment functionality
     function initComments(postId) {
