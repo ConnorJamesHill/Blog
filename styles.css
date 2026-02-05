@@ -389,6 +389,156 @@ body {
   border-bottom: 2px solid var(--border);
 }
 
+.socials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.social-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.social-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  border-color: transparent;
+}
+
+.social-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.social-card:hover .social-icon {
+  transform: scale(1.1);
+}
+
+.social-content {
+  flex: 1;
+}
+
+.social-content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.social-content p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.social-handle {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.twitter-card .social-icon {
+  background: #1DA1F2;
+  color: white;
+}
+
+.twitter-card:hover {
+  border-color: #1DA1F2;
+}
+
+.twitter-card .social-handle {
+  background: rgba(29, 161, 242, 0.1);
+  color: #1DA1F2;
+}
+
+.bluesky-card .social-icon {
+  background: #0085ff;
+  color: white;
+}
+
+.bluesky-card:hover {
+  border-color: #0085ff;
+}
+
+.bluesky-card .social-handle {
+  background: rgba(0, 133, 255, 0.1);
+  color: #0085ff;
+}
+
+.linkedin-card .social-icon {
+  background: #0077B5;
+  color: white;
+}
+
+.linkedin-card:hover {
+  border-color: #0077B5;
+}
+
+.linkedin-card .social-handle {
+  background: rgba(0, 119, 181, 0.1);
+  color: #0077B5;
+}
+
+.instagram-card .social-icon {
+  background: linear-gradient(135deg, #833AB4 0%, #FD1D1D 50%, #F77737 100%);
+  color: white;
+}
+
+.instagram-card:hover {
+  border-color: #E1306C;
+}
+
+.instagram-card .social-handle {
+  background: rgba(225, 48, 108, 0.1);
+  color: #E1306C;
+}
+
+.tiktok-card .social-icon {
+  background: #000000;
+  color: white;
+}
+
+.tiktok-card:hover {
+  border-color: #000000;
+}
+
+.tiktok-card .social-handle {
+  background: rgba(0, 0, 0, 0.1);
+  color: #000000;
+}
+
+.github-card .social-icon {
+  background: #333333;
+  color: white;
+}
+
+.github-card:hover {
+  border-color: #333333;
+}
+
+.github-card .social-handle {
+  background: rgba(51, 51, 51, 0.1);
+  color: #333333;
+}
+
 .post-card p,
 .project-card p {
   color: var(--text-secondary);
@@ -1086,5 +1236,22 @@ body {
 
   .settings-grid-full {
     max-width: 100%;
+  }
+
+  .socials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .social-card {
+    padding: 20px;
+  }
+
+  .social-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .social-content h3 {
+    font-size: 18px;
   }
 }
