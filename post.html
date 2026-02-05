@@ -472,6 +472,15 @@
       if (currentUser) {
         commentFormContainer.style.display = 'block';
         loginPrompt.style.display = 'none';
+        
+        // Pre-fill name field with user's display name and make it read-only
+        const nameInput = document.querySelector('#commentForm input[name="name"]');
+        if (nameInput && currentUser.displayName) {
+          nameInput.value = currentUser.displayName;
+          nameInput.readOnly = true;
+          nameInput.style.backgroundColor = 'var(--surface-muted)';
+          nameInput.style.cursor = 'not-allowed';
+        }
       } else {
         commentFormContainer.style.display = 'none';
         loginPrompt.style.display = 'block';
@@ -647,18 +656,15 @@
               Share your thoughts, questions, or feedback about this post.
             </p>
             
-            <!-- Login prompt for non-authenticated users -->
+            <!-- Subscribe prompt for non-authenticated users -->
             <div id="loginPrompt" class="comment-login-prompt" style="display: none;">
-              <h4 style="margin-bottom: 12px; color: var(--text-primary);">🔒 Login Required</h4>
+              <h4 style="margin-bottom: 12px; color: var(--text-primary);">💬 Join the Discussion</h4>
               <p style="color: var(--text-secondary); margin-bottom: 20px;">
-                Please log in or create an account to leave a comment and join the discussion.
+                You must be subscribed to add a comment. Create an account to join the conversation.
               </p>
               <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                <button class="primary-button" onclick="document.getElementById('loginBtn').click()">
-                  Log In
-                </button>
-                <button class="secondary-button" onclick="document.getElementById('signupBtn').click()">
-                  Create Account
+                <button class="primary-button" onclick="window.location.href='index.html#settings'">
+                  Subscribe
                 </button>
               </div>
             </div>
