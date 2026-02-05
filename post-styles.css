@@ -51,10 +51,21 @@
   flex-wrap: wrap;
 }
 
-.post-date,
-.read-time {
+.post-date {
   color: var(--text-secondary);
   font-size: 14px;
+}
+
+.read-time {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--accent-soft);
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .post-content h1 {

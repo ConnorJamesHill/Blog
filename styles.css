@@ -298,6 +298,18 @@ body {
   font-weight: 600;
 }
 
+.read-time-badge {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--accent-soft);
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .post-card h3,
 .project-card h3 {
   font-size: 19px;

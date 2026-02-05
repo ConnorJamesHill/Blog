@@ -46,7 +46,7 @@ function init() {
               <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                 <span class="pill">${post.category}</span>
                 <span class="muted">${post.date}</span>
-                <span class="muted">${post.readTime}</span>
+                <span class="read-time-badge">📖 ${post.readTime}</span>
               </div>
             </div>
             <a href="${post.url}" class="primary-button" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
