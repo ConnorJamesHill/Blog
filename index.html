@@ -376,7 +376,7 @@
     <div id="loginModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>🔐 Admin Login</h2>
+          <h2>🔐 Log In</h2>
           <span class="close-modal" id="closeModal">&times;</span>
         </div>
         <div class="modal-body">
@@ -699,9 +699,15 @@
         loginError.textContent = '';
         
         try {
-          await signInWithEmailAndPassword(auth, email, password);
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
           loginModal.style.display = 'none';
-          window.location.href = 'admin.html';
+          modalLoginForm.reset();
+          
+          // Only redirect to admin page if user is admin
+          if (isAdmin(userCredential.user)) {
+            window.location.href = 'admin.html';
+          }
+          // Regular users just stay on the page - modal closes and UI updates via onAuthStateChanged
         } catch (error) {
           console.error('Login error:', error);
           
