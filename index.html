@@ -31,7 +31,7 @@
             and connect with developers who care about craftsmanship.
           </p>
           <div class="hero-cta">
-            <button class="primary-button" type="button" onclick="window.location.href='#settings'">Join the Blog</button>
+            <button class="primary-button" type="button" id="joinBlogBtn" onclick="window.location.href='#settings'">Join the Blog</button>
             <button class="secondary-button" type="button" onclick="window.location.href='#portfolio'">View Portfolio</button>
           </div>
         </div>
@@ -433,6 +433,7 @@
       } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
       const loginBtn = document.getElementById('loginBtn');
+      const joinBlogBtn = document.getElementById('joinBlogBtn');
       const adminPanelBtn = document.getElementById('adminPanelBtn');
       const loginModal = document.getElementById('loginModal');
       const closeModal = document.getElementById('closeModal');
@@ -459,6 +460,11 @@
             }
           };
 
+          // Update "Join the Blog" button to "Welcome!"
+          joinBlogBtn.textContent = 'Welcome!';
+          joinBlogBtn.onclick = null;
+          joinBlogBtn.style.cursor = 'default';
+
           // Show admin panel button if user is admin
           if (isAdmin(user)) {
             adminPanelBtn.style.display = 'block';
@@ -475,6 +481,11 @@
           loginBtn.classList.add('primary-button');
           loginBtn.onclick = () => loginModal.style.display = 'flex';
           adminPanelBtn.style.display = 'none';
+
+          // Reset "Join the Blog" button
+          joinBlogBtn.textContent = 'Join the Blog';
+          joinBlogBtn.onclick = () => window.location.href = '#settings';
+          joinBlogBtn.style.cursor = 'pointer';
 
           // Show not-logged-in settings view
           updateSettingsView(null);
