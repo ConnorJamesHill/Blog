@@ -196,7 +196,7 @@ function init() {
       const { db } = await import('./js/firebase-config.js');
       const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
       
-      const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+      const q = query(collection(db, 'posts'), orderBy('sortDate', 'desc'));
       const querySnapshot = await getDocs(q);
       
       blogPosts = [];

@@ -48,7 +48,7 @@
     
     .form-row {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 16px;
       margin-bottom: 20px;
     }
@@ -183,6 +183,12 @@
         gap: 16px;
       }
     }
+    
+    @media (min-width: 901px) and (max-width: 1200px) {
+      .form-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -224,6 +230,11 @@
           <div class="form-group">
             <label for="readTime">Read Time *</label>
             <input type="text" id="readTime" required placeholder="5 min read">
+          </div>
+          
+          <div class="form-group">
+            <label for="postDate">Post Date *</label>
+            <input type="date" id="postDate" required>
           </div>
         </div>
         
@@ -274,6 +285,10 @@
     // Track if we're editing a post
     let editingPostId = null;
 
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('postDate').value = today;
+
     // Auth check - only allow admin access
     onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -314,13 +329,23 @@
       const originalText = publishButton.textContent;
       publishButton.textContent = editingPostId ? 'Updating...' : 'Publishing...';
       
+      // Get the custom date
+      const customDateInput = document.getElementById('postDate').value;
+      const customDate = new Date(customDateInput);
+      
       const postData = {
         title: document.getElementById('title').value,
         category: document.getElementById('category').value,
         readTime: document.getElementById('readTime').value,
         excerpt: document.getElementById('excerpt').value,
         content: document.getElementById('content').value,
-        author: auth.currentUser.email
+        author: auth.currentUser.email,
+        date: customDate.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }),
+        sortDate: customDate.getTime() // Store as timestamp for sorting
       };
 
       try {
@@ -335,11 +360,6 @@
           cancelEdit();
         } else {
           // Create new post
-          postData.date = new Date().toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          });
           postData.timestamp = serverTimestamp();
           
           const docRef = await addDoc(collection(db, 'posts'), postData);
@@ -391,6 +411,18 @@
         document.getElementById('excerpt').value = postData.excerpt;
         document.getElementById('content').value = postData.content;
         
+        // Convert date back to YYYY-MM-DD format for the date input
+        if (postData.sortDate) {
+          const date = new Date(postData.sortDate);
+          const dateString = date.toISOString().split('T')[0];
+          document.getElementById('postDate').value = dateString;
+        } else if (postData.date) {
+          // Fallback: try to parse the formatted date string
+          const date = new Date(postData.date);
+          const dateString = date.toISOString().split('T')[0];
+          document.getElementById('postDate').value = dateString;
+        }
+        
         // Update UI
         editingPostId = postId;
         editorTitle.textContent = '✏️ Edit Blog Post';
@@ -418,6 +450,9 @@
       publishButton.textContent = 'Publish Post';
       cancelEditButton.style.display = 'none';
       postForm.reset();
+      // Reset date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('postDate').value = today;
       statusMessage.classList.remove('show');
     }
     
@@ -431,6 +466,9 @@
     document.getElementById('clearButton').addEventListener('click', () => {
       if (confirm('Clear the form?')) {
         postForm.reset();
+        // Reset date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('postDate').value = today;
       }
     });
 
@@ -439,7 +477,8 @@
       const postsList = document.getElementById('postsList');
       
       try {
-        const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'));
+        // Try to sort by sortDate, fallback to timestamp if sortDate doesn't exist
+        const q = query(collection(db, 'posts'), orderBy('sortDate', 'desc'));
         const querySnapshot = await getDocs(q);
         
         if (querySnapshot.empty) {
