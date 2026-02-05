@@ -78,66 +78,112 @@
           <div>
             <h2>Portfolio</h2>
             <p class="muted">
-              A curated list of iOS apps, experiments, and shipped features.
+              A curated list of iOS apps, websites, and projects I've built.
             </p>
           </div>
-          <button class="filter-pill">Featured</button>
         </div>
-        <div class="content-grid">
-          <article class="card project-card">
-            <a href="https://apps.apple.com/us/app/perk-punch/id6746662386" target="_blank" class="project-icon-link">
-              <img
-                class="project-icon"
-                src="https://via.placeholder.com/120/3579ff/ffffff?text=PP"
-                alt="Perk Punch app icon"
-              />
-            </a>
-            <h3>
-              <a href="https://apps.apple.com/us/app/perk-punch/id6746662386" target="_blank">Perk Punch</a>
-            </h3>
-            <p>Punch Your Way to Perks.</p>
-            <div class="project-tags">
-              <span>Loyalty</span>
-              <span>Rewards</span>
-              <span>iOS</span>
-            </div>
-          </article>
-          <article class="card project-card">
-            <a href="https://apps.apple.com/us/app/bookworm/id6738531588" target="_blank" class="project-icon-link">
-              <img
-                class="project-icon"
-                src="https://via.placeholder.com/120/3579ff/ffffff?text=BW"
-                alt="BookWorm! app icon"
-              />
-            </a>
-            <h3>
-              <a href="https://apps.apple.com/us/app/bookworm/id6738531588" target="_blank">BookWorm!</a>
-            </h3>
-            <p>Library, organize, search.</p>
-            <div class="project-tags">
-              <span>Library</span>
-              <span>Catalog</span>
-              <span>Search</span>
-            </div>
-          </article>
-          <article class="card project-card">
-            <a href="https://apps.apple.com/us/app/auto-do-it/id6670796120" target="_blank" class="project-icon-link">
-              <img
-                class="project-icon"
-                src="https://via.placeholder.com/120/3579ff/ffffff?text=ADI"
-                alt="Auto Do It app icon"
-              />
-            </a>
-            <h3>
-              <a href="https://apps.apple.com/us/app/auto-do-it/id6670796120" target="_blank">Auto Do It</a>
-            </h3>
-            <p>ToDo List Plan, Organize, AI.</p>
-            <div class="project-tags">
-              <span>To-Do</span>
-              <span>Planning</span>
-              <span>AI</span>
-            </div>
-          </article>
+
+        <!-- Apps Section -->
+        <div class="portfolio-section">
+          <h3 class="portfolio-section-title">Apps</h3>
+          <div class="content-grid">
+            <article class="card project-card">
+              <a href="https://apps.apple.com/us/app/perk-punch/id6746662386" target="_blank" class="project-icon-link">
+                <img
+                  class="project-icon app-icon"
+                  data-app-id="6746662386"
+                  src="https://via.placeholder.com/120/3579ff/ffffff?text=PP"
+                  alt="Perk Punch app icon"
+                />
+              </a>
+              <h3>
+                <a href="https://apps.apple.com/us/app/perk-punch/id6746662386" target="_blank">Perk Punch</a>
+              </h3>
+              <p>Punch Your Way to Perks.</p>
+              <div class="project-tags">
+                <span>Loyalty</span>
+                <span>Rewards</span>
+                <span>iOS</span>
+              </div>
+            </article>
+            <article class="card project-card">
+              <a href="https://apps.apple.com/us/app/bookworm/id6738531588" target="_blank" class="project-icon-link">
+                <img
+                  class="project-icon app-icon"
+                  data-app-id="6738531588"
+                  src="https://via.placeholder.com/120/ff6b6b/ffffff?text=BW"
+                  alt="BookWorm! app icon"
+                />
+              </a>
+              <h3>
+                <a href="https://apps.apple.com/us/app/bookworm/id6738531588" target="_blank">BookWorm!</a>
+              </h3>
+              <p>Library, organize, search.</p>
+              <div class="project-tags">
+                <span>Library</span>
+                <span>Catalog</span>
+                <span>Search</span>
+              </div>
+            </article>
+            <article class="card project-card">
+              <a href="https://apps.apple.com/us/app/auto-do-it/id6670796120" target="_blank" class="project-icon-link">
+                <img
+                  class="project-icon app-icon"
+                  data-app-id="6670796120"
+                  src="https://via.placeholder.com/120/4ecdc4/ffffff?text=ADI"
+                  alt="Auto Do It app icon"
+                />
+              </a>
+              <h3>
+                <a href="https://apps.apple.com/us/app/auto-do-it/id6670796120" target="_blank">Auto Do It</a>
+              </h3>
+              <p>ToDo List Plan, Organize, AI.</p>
+              <div class="project-tags">
+                <span>To-Do</span>
+                <span>Planning</span>
+                <span>AI</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Websites Section -->
+        <div class="portfolio-section">
+          <h3 class="portfolio-section-title">Websites</h3>
+          <div class="content-grid">
+            <article class="card project-card">
+              <div class="project-icon-placeholder website-icon">
+                <span style="font-size: 32px; font-weight: 700; color: white;">WEB</span>
+              </div>
+              <h3>
+                <a href="#" target="_blank">Connor Hill's Blog</a>
+              </h3>
+              <p>Personal blog and portfolio built with vanilla HTML, CSS, and JavaScript. Firebase backend for comments and auth.</p>
+              <div class="project-tags">
+                <span>Web</span>
+                <span>Firebase</span>
+                <span>Blog</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Other Section -->
+        <div class="portfolio-section">
+          <h3 class="portfolio-section-title">Other Projects</h3>
+          <div class="content-grid">
+            <article class="card project-card">
+              <div class="project-icon-placeholder other-icon">
+                <span style="font-size: 32px; font-weight: 700; color: white;">OSS</span>
+              </div>
+              <h3>Open Source Contributions</h3>
+              <p>Various contributions to iOS development tools and libraries on GitHub.</p>
+              <div class="project-tags">
+                <span>Open Source</span>
+                <span>GitHub</span>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 

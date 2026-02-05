@@ -340,6 +340,43 @@ body {
   box-shadow: 0 15px 35px rgba(53, 121, 255, 0.3);
 }
 
+.project-icon-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.website-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.other-icon {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.portfolio-section {
+  margin-bottom: 60px;
+}
+
+.portfolio-section:last-child {
+  margin-bottom: 0;
+}
+
+.portfolio-section-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+
 .post-card p,
 .project-card p {
   color: var(--text-secondary);

@@ -224,7 +224,36 @@ function init() {
     }
   }
 
+  // Load app icons from iTunes API
+  async function loadAppIcons() {
+    const appIcons = document.querySelectorAll('.app-icon[data-app-id]');
+    
+    for (const img of appIcons) {
+      const appId = img.getAttribute('data-app-id');
+      if (!appId) continue;
+      
+      try {
+        const response = await fetch(`https://itunes.apple.com/lookup?id=${appId}`);
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+          const app = data.results[0];
+          // Get the 512x512 icon (or 100x100 if 512 isn't available)
+          const iconUrl = app.artworkUrl512 || app.artworkUrl100 || app.artworkUrl60;
+          if (iconUrl) {
+            img.src = iconUrl;
+            console.log(`Loaded icon for app ${appId}`);
+          }
+        }
+      } catch (error) {
+        console.error(`Error loading icon for app ${appId}:`, error);
+        // Keep placeholder on error
+      }
+    }
+  }
+
   // Initialize
   renderBlogPosts();
   loadPostsFromFirebase();
+  loadAppIcons();
 }
