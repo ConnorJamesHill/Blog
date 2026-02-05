@@ -212,7 +212,7 @@
       console.log('loginPrompt:', loginPrompt);
       
       if (!commentFormContainer || !loginPrompt) {
-        console.error('Comment elements not found!');
+        console.log('Comment elements not found yet - will be called again after post loads');
         return;
       }
       
@@ -703,6 +703,9 @@
 
         // Initialize comment functionality
         initComments(postId);
+        
+        // Update comment form visibility after post is loaded
+        updateCommentFormVisibility();
       } catch (error) {
         console.error('Error loading post:', error);
         document.getElementById('postContent').innerHTML = `
