@@ -94,6 +94,31 @@
     </div>
   </div>
 
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🔑 Reset Password</h2>
+        <span class="close-modal" id="closeForgotPasswordModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
+        <div id="forgotPasswordMessage" class="form-message"></div>
+        <form id="forgotPasswordForm">
+          <div class="modal-form-group">
+            <label for="forgotPasswordEmail">Email Address</label>
+            <input type="email" id="forgotPasswordEmail" required placeholder="your@email.com" autocomplete="email">
+          </div>
+          <button type="submit" class="primary-button" style="width: 100%;">
+            Send Reset Link
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Hidden signup trigger button -->
   <button id="signupBtn" style="display: none;"></button>
 
@@ -125,6 +150,13 @@
           <a href="index.html#about" class="link-button">About</a>
           <a href="index.html#settings" class="link-button">Subscribe</a>
         </div>
+        <div class="footer-section">
+          <h4>Other</h4>
+          <a href="faq.html" class="link-button">FAQ</a>
+          <a href="#" class="link-button" id="forgotPasswordLink">Forgot Password?</a>
+          <a href="terms.html" class="link-button">Terms of Service</a>
+          <a href="privacy.html" class="link-button">Privacy Policy</a>
+        </div>
       </div>
     </div>
   </footer>
@@ -132,7 +164,7 @@
   <script type="module">
     import { db, auth, isAdmin } from './js/firebase-config.js';
     import { doc as firestoreDoc, getDoc, collection, addDoc, query, orderBy, getDocs, Timestamp, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-    import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
     // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -157,6 +189,13 @@
     const modalSignupForm = document.getElementById('modalSignupForm');
     const modalSignupButton = document.getElementById('modalSignupButton');
     const signupError = document.getElementById('signupError');
+
+    // Forgot Password Modal
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const closeForgotPasswordModal = document.getElementById('closeForgotPasswordModal');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const forgotPasswordMessage = document.getElementById('forgotPasswordMessage');
 
     // Modal switchers
     const switchToSignup = document.getElementById('switchToSignup');
@@ -221,6 +260,11 @@
         signupError.textContent = '';
         modalSignupForm.reset();
       }
+      if (e.target === forgotPasswordModal) {
+        forgotPasswordModal.style.display = 'none';
+        forgotPasswordMessage.textContent = '';
+        forgotPasswordForm.reset();
+      }
     });
 
     // Handle login
@@ -271,6 +315,11 @@
         signupModal.style.display = 'none';
         signupError.textContent = '';
         modalSignupForm.reset();
+      }
+      if (e.key === 'Escape' && forgotPasswordModal.style.display === 'flex') {
+        forgotPasswordModal.style.display = 'none';
+        forgotPasswordMessage.textContent = '';
+        forgotPasswordForm.reset();
       }
     });
 
@@ -362,6 +411,54 @@
         signupError.textContent = message;
         modalSignupButton.disabled = false;
         modalSignupButton.textContent = 'Create Account';
+      }
+    });
+
+    // Open forgot password modal
+    forgotPasswordLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      forgotPasswordModal.style.display = 'flex';
+    });
+
+    // Close forgot password modal
+    closeForgotPasswordModal.addEventListener('click', () => {
+      forgotPasswordModal.style.display = 'none';
+      forgotPasswordMessage.textContent = '';
+      forgotPasswordForm.reset();
+    });
+
+    // Handle forgot password form submission
+    forgotPasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('forgotPasswordEmail').value;
+      
+      forgotPasswordMessage.textContent = 'Sending email...';
+      forgotPasswordMessage.style.color = 'var(--accent)';
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        
+        forgotPasswordMessage.textContent = '✓ Password reset email sent! Check your inbox.';
+        forgotPasswordMessage.style.color = 'var(--accent)';
+        
+        setTimeout(() => {
+          forgotPasswordModal.style.display = 'none';
+          forgotPasswordMessage.textContent = '';
+          forgotPasswordForm.reset();
+        }, 3000);
+      } catch (error) {
+        console.error('Error sending password reset email:', error);
+        
+        let message = 'Error sending reset email. Please try again.';
+        if (error.code === 'auth/user-not-found') {
+          message = 'No account found with this email address.';
+        } else if (error.code === 'auth/invalid-email') {
+          message = 'Invalid email address.';
+        }
+        
+        forgotPasswordMessage.textContent = message;
+        forgotPasswordMessage.style.color = '#dc3545';
       }
     });
 

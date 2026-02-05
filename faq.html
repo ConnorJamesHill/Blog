@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ - Connor Hill's Blog</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .faq-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 80px 40px 60px;
+      }
+
+      .faq-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .faq-header h1 {
+        font-size: 48px;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .faq-header p {
+        color: var(--text-secondary);
+        font-size: 18px;
+      }
+
+      .faq-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 20px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .faq-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      }
+
+      .faq-question {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+      }
+
+      .faq-answer {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .faq-answer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .faq-answer a:hover {
+        text-decoration: underline;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 40px;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="faq-container">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      
+      <div class="faq-header">
+        <h1>Frequently Asked Questions</h1>
+        <p>Everything you need to know about Connor Hill's Blog</p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">What is this blog about?</h3>
+        <p class="faq-answer">
+          This blog focuses on iOS development, SwiftUI tutorials, app architecture patterns, and my journey building apps. I share practical tutorials, code examples, and insights from my experience as an iOS developer.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">How often do you post new content?</h3>
+        <p class="faq-answer">
+          I typically publish new tutorials and articles 1-2 times per month. Subscribe to get notified when I publish new posts!
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">Do I need an account to read articles?</h3>
+        <p class="faq-answer">
+          No! All blog posts are free to read without an account. However, creating an account allows you to leave comments, get email notifications about new posts, and save your preferences.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">How do I create an account?</h3>
+        <p class="faq-answer">
+          Click on the <a href="index.html#settings">Settings tab</a> on the homepage and fill out the signup form with your name, email, and password. You'll be logged in immediately after creating your account.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">Can I unsubscribe from email notifications?</h3>
+        <p class="faq-answer">
+          Yes! Go to your <a href="index.html#settings">account settings</a> and adjust your email preferences. You can choose which types of emails you want to receive, or turn them all off.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">I forgot my password. How do I reset it?</h3>
+        <p class="faq-answer">
+          Click on "Forgot Password?" in the footer or use the password reset option in your account settings. We'll send you an email with instructions to reset your password.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">How do I delete my account?</h3>
+        <p class="faq-answer">
+          Log in and go to your <a href="index.html#settings">account settings</a>. Scroll down to the "Account Management" section where you'll find the option to delete your account. This will permanently remove your account, comments, and all associated data.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">Can I share your articles?</h3>
+        <p class="faq-answer">
+          Absolutely! Feel free to share links to any articles on social media, in your own blog posts, or with colleagues. I appreciate you spreading the word!
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">Do you accept guest posts?</h3>
+        <p class="faq-answer">
+          Not at this time, but I'm always open to collaboration ideas. Feel free to reach out via <a href="mailto:hilljamesconnor@gmail.com">email</a> if you have something in mind!
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">How can I contact you?</h3>
+        <p class="faq-answer">
+          You can reach me at <a href="mailto:hilljamesconnor@gmail.com">hilljamesconnor@gmail.com</a>. I read all emails and try to respond within a few days.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">Are the code examples free to use?</h3>
+        <p class="faq-answer">
+          Yes! All code snippets and examples in my tutorials are free to use in your own projects. No attribution required, though it's always appreciated!
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3 class="faq-question">Still have questions?</h3>
+        <p class="faq-answer">
+          If your question isn't answered here, feel free to <a href="mailto:hilljamesconnor@gmail.com">send me an email</a> or leave a comment on any blog post. I'm happy to help!
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
