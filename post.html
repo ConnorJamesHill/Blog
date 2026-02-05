@@ -609,15 +609,12 @@
               <h3>Share this article</h3>
               <div class="share-buttons">
                 <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}" class="share-button twitter" target="_blank">
-                  <span>🐦</span>
                   Share on Twitter
                 </a>
                 <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}" class="share-button linkedin" target="_blank">
-                  <span>💼</span>
                   Share on LinkedIn
                 </a>
-                <button class="share-button copy" onclick="navigator.clipboard.writeText('${currentUrl}'); this.innerHTML = '<span>✓</span> Copied!'">
-                  <span>🔗</span>
+                <button class="share-button copy" onclick="navigator.clipboard.writeText('${currentUrl}'); this.innerHTML = 'Copied!'">
                   Copy Link
                 </button>
               </div>
@@ -628,7 +625,7 @@
               <div class="author-info">
                 <h4>Connor Hill</h4>
                 <p>
-                  iOS developer passionate about crafting delightful mobile experiences. 
+                  iOS developer passionate about crafting awesome mobile experiences. 
                   I write about SwiftUI, UIKit, and everything in between. 
                   Currently building apps that prioritize performance and user experience.
                 </p>
