@@ -224,7 +224,7 @@ function init() {
     }
   }
 
-  // Load app icons from iTunes API
+  // Load app icons from iTunes API with multiple fallback methods
   async function loadAppIcons() {
     const appIcons = document.querySelectorAll('.app-icon[data-app-id]');
     
@@ -232,22 +232,65 @@ function init() {
       const appId = img.getAttribute('data-app-id');
       if (!appId) continue;
       
-      try {
-        const response = await fetch(`https://itunes.apple.com/lookup?id=${appId}`);
-        const data = await response.json();
-        
-        if (data.results && data.results.length > 0) {
-          const app = data.results[0];
-          // Get the 512x512 icon (or 100x100 if 512 isn't available)
-          const iconUrl = app.artworkUrl512 || app.artworkUrl100 || app.artworkUrl60;
-          if (iconUrl) {
-            img.src = iconUrl;
-            console.log(`Loaded icon for app ${appId}`);
+      console.log(`Attempting to load icon for app ID: ${appId}`);
+      
+      // Try multiple methods
+      const methods = [
+        // Method 1: iTunes API
+        async () => {
+          const response = await fetch(`https://itunes.apple.com/lookup?id=${appId}`);
+          if (!response.ok) throw new Error('API request failed');
+          const data = await response.json();
+          if (data.results && data.results.length > 0) {
+            const app = data.results[0];
+            // Try to get larger size by modifying URL
+            let iconUrl = app.artworkUrl512 || app.artworkUrl100 || app.artworkUrl60;
+            if (iconUrl && iconUrl.includes('100x100')) {
+              iconUrl = iconUrl.replace('100x100', '512x512');
+            }
+            return iconUrl;
           }
+          throw new Error('No results found');
+        },
+        // Method 2: Direct App Store scraping URL (sometimes works)
+        async () => {
+          return `https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/app-icon/${appId}.png/512x512bb.png`;
         }
-      } catch (error) {
-        console.error(`Error loading icon for app ${appId}:`, error);
-        // Keep placeholder on error
+      ];
+      
+      let iconLoaded = false;
+      for (const method of methods) {
+        try {
+          const iconUrl = await method();
+          if (iconUrl) {
+            // Test if the URL works
+            const testImg = new Image();
+            testImg.crossOrigin = 'anonymous';
+            
+            await new Promise((resolve, reject) => {
+              testImg.onload = () => {
+                img.src = iconUrl;
+                console.log(`✓ Loaded icon for app ${appId} using URL:`, iconUrl);
+                iconLoaded = true;
+                resolve();
+              };
+              testImg.onerror = reject;
+              testImg.src = iconUrl;
+              
+              // Timeout after 5 seconds
+              setTimeout(() => reject(new Error('Timeout')), 5000);
+            });
+            
+            if (iconLoaded) break;
+          }
+        } catch (error) {
+          console.log(`Method failed for app ${appId}:`, error.message);
+          continue;
+        }
+      }
+      
+      if (!iconLoaded) {
+        console.error(`❌ All methods failed for app ${appId}, using placeholder`);
       }
     }
   }
@@ -255,5 +298,8 @@ function init() {
   // Initialize
   renderBlogPosts();
   loadPostsFromFirebase();
-  loadAppIcons();
+  
+  // Try to load app icons if possible (will use placeholders if it fails)
+  // Commented out for now - using styled placeholders instead
+  // loadAppIcons();
 }

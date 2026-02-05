@@ -352,6 +352,18 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.app-icon-perk {
+  background: linear-gradient(135deg, #3579ff 0%, #0056d6 100%);
+}
+
+.app-icon-bookworm {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+.app-icon-autodoit {
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a3a0 100%);
+}
+
 .website-icon {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }

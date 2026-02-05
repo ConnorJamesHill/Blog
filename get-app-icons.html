@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Icon Downloader</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .app-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    .app-section h3 {
+      margin-bottom: 10px;
+    }
+    .icon-display {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .icon-display img {
+      width: 120px;
+      height: 120px;
+      border-radius: 22px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .url-box {
+      background: white;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      word-break: break-all;
+      font-size: 12px;
+      font-family: monospace;
+      margin-top: 10px;
+    }
+    button {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 App Icon Fetcher</h1>
+    <p>This tool will fetch the real app icons from the App Store for your portfolio.</p>
+
+    <div id="apps-container"></div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 8px;">
+      <h3>📋 Instructions:</h3>
+      <ol>
+        <li>Click the "Fetch Icon" button for each app</li>
+        <li>Right-click on the displayed icon and choose "Save Image As..."</li>
+        <li>Save to your blog's folder (e.g., /images/perk-punch-icon.png)</li>
+        <li>Update the src in index.html to point to the saved image</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const apps = [
+      { id: '6746662386', name: 'Perk Punch', bundleId: 'com.connorhill.perkpunch' },
+      { id: '6738531588', name: 'BookWorm!', bundleId: 'com.connorhill.bookworm' },
+      { id: '6670796120', name: 'Auto Do It', bundleId: 'com.connorhill.autodoit' }
+    ];
+
+    const appsContainer = document.getElementById('apps-container');
+
+    apps.forEach(app => {
+      const section = document.createElement('div');
+      section.className = 'app-section';
+      section.id = `app-${app.id}`;
+      
+      section.innerHTML = `
+        <h3>${app.name}</h3>
+        <p>App ID: ${app.id}</p>
+        <button onclick="fetchIcon('${app.id}', '${app.name}')">Fetch Icon</button>
+        <div id="status-${app.id}"></div>
+        <div id="icon-display-${app.id}" class="icon-display" style="display: none;"></div>
+      `;
+      
+      appsContainer.appendChild(section);
+    });
+
+    async function fetchIcon(appId, appName) {
+      const statusDiv = document.getElementById(`status-${appId}`);
+      const iconDiv = document.getElementById(`icon-display-${appId}`);
+      
+      statusDiv.innerHTML = '<div class="status">Fetching icon...</div>';
+      iconDiv.style.display = 'none';
+
+      try {
+        // Try iTunes Search API
+        const response = await fetch(`https://itunes.apple.com/lookup?id=${appId}`);
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          const app = data.results[0];
+          
+          // Try different artwork URLs
+          const iconUrls = [
+            app.artworkUrl512,
+            app.artworkUrl100,
+            app.artworkUrl60
+          ].filter(url => url);
+
+          if (iconUrls.length > 0) {
+            // Show all available sizes
+            iconDiv.innerHTML = iconUrls.map(url => `
+              <div>
+                <img src="${url}" alt="${appName}" crossorigin="anonymous" />
+                <div class="url-box">
+                  <strong>URL:</strong><br>
+                  ${url}
+                </div>
+                <button onclick="navigator.clipboard.writeText('${url}')">Copy URL</button>
+              </div>
+            `).join('');
+            iconDiv.style.display = 'flex';
+            
+            statusDiv.innerHTML = `
+              <div class="status success">
+                ✓ Found ${iconUrls.length} icon size(s)!<br>
+                Right-click to save, or copy the URL to use in your HTML.
+              </div>
+            `;
+          } else {
+            throw new Error('No artwork URLs found');
+          }
+        } else {
+          throw new Error('App not found');
+        }
+      } catch (error) {
+        console.error(`Error fetching icon for ${appName}:`, error);
+        statusDiv.innerHTML = `
+          <div class="status error">
+            ❌ Error: ${error.message}<br>
+            Try visiting the App Store page directly and taking a screenshot of the icon.
+          </div>
+        `;
+        
+        // Show direct App Store link
+        const link = `https://apps.apple.com/us/app/id${appId}`;
+        statusDiv.innerHTML += `
+          <div style="margin-top: 10px;">
+            <a href="${link}" target="_blank" style="color: #007aff;">Open App Store Page →</a>
+          </div>
+        `;
+      }
+    }
+
+    // Auto-fetch on page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        apps.forEach(app => fetchIcon(app.id, app.name));
+      }, 500);
+    });
+  </script>
+</body>
+</html>
