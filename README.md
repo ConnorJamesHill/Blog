@@ -2,9 +2,9 @@
 
 A modern, full stack blog platform built from scratch with vanilla JavaScript, HTML, CSS, and Firebase. Features user authentication, a custom admin CMS, real time comments, and automated email notifications.
 
-🔗 **Live Site:** [connorhillblog.netlify.app](https://connorhillblog.netlify.app/)
+**Live Site:** [connorhillblog.netlify.app](https://connorhillblog.netlify.app/)
 
-## 📋 Features
+## Features
 
 ### User Features
 - **User Authentication** - Secure account creation and login with Firebase Auth
@@ -28,7 +28,7 @@ A modern, full stack blog platform built from scratch with vanilla JavaScript, H
 - **Comment Notifications** - Notify users of replies to their comments
 - **Firestore Database** - NoSQL database for posts, comments, and user data
 
-## 🛠 Tech Stack
+## Tech Stack
 
 **Frontend:**
 - Vanilla JavaScript (ES6 modules)
@@ -45,7 +45,7 @@ A modern, full stack blog platform built from scratch with vanilla JavaScript, H
 - Netlify (Frontend hosting)
 - Firebase Hosting (Alternative option)
 
-## 🏗 Project Structure
+## Project Structure
 
 ```
 Blog/
@@ -81,7 +81,7 @@ Blog/
 - Email HTML templates are in `functions/index.js`
 - Customize colors, branding, and copy for welcome/notification emails
 
-## 📧 Email Notifications
+## Email Notifications
 
 The blog includes three automated email types:
 1. **Welcome Email** - Sent when users create an account
@@ -117,7 +117,7 @@ Building this project from scratch provided hands on experience with:
 - **Responsive Web Design** - Creating mobile first layouts
 - **Cloud Deployment** - Deploying full stack applications
 
-## 📝 Future Enhancements
+## Future Enhancements
 
 - [ ] Rich text editor (WYSIWYG) for blog post creation
 - [ ] Image upload functionality for posts
@@ -128,7 +128,7 @@ Building this project from scratch provided hands on experience with:
 - [ ] RSS feed generation
 - [ ] Dark mode toggle
 
-## 👤 Author
+## Author
 
 **Connor Hill**  
 iOS Developer & Blog Creator
@@ -139,7 +139,7 @@ iOS Developer & Blog Creator
 - LinkedIn: [Connor Hill](https://linkedin.com/in/connor-j-hill)
 - Twitter: [@ConnorJayHill](https://twitter.com/ConnorJayHill)
 
-## 📄 License
+## License
 
 This project is open source and available for personal and educational use.
 
