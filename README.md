@@ -44,42 +44,6 @@ A modern, full stack blog platform built from scratch with vanilla JavaScript, H
 **Deployment:**
 - Netlify
 
-## Project Structure
-
-```
-Blog/
-├── index.html              # Main landing page
-├── post.html              # Individual blog post page
-├── admin.html             # Admin CMS panel
-├── admin-login.html       # Admin login page
-├── styles.css             # Global styles
-├── post-styles.css        # Blog post-specific styles
-├── script.js              # Main JavaScript logic
-├── js/
-│   └── firebase-config.js # Firebase configuration
-├── functions/
-│   ├── index.js           # Cloud Functions for email automation
-│   └── package.json       # Backend dependencies
-├── images/                # App icons and assets
-└── posts/                 # Static post content (if any)
-```
-
-## Customization
-
-### Styling
-- Primary colors defined in CSS custom properties in `styles.css`
-- Modify the gradient in `.hero` for custom branding
-- Update font families in the root CSS variables
-
-### Content
-- Blog categories can be modified in `admin.html` (category select dropdown)
-- Social links in the Socials tab can be updated in `index.html`
-- Portfolio projects can be added/edited in the Portfolio section
-
-### Email Templates
-- Email HTML templates are in `functions/index.js`
-- Customize colors, branding, and copy for welcome/notification emails
-
 ## Email Notifications
 
 The blog includes three automated email types:
@@ -94,7 +58,6 @@ All emails respect user preferences set in their account settings.
 - Firebase Authentication for user management
 - Server side validation via Firestore Security Rules
 - Admin privileges verified server side
-- Rate limiting on authentication attempts
 - Password reset functionality
 - Account deletion with data cleanup
 
@@ -115,28 +78,6 @@ Building this project from scratch provided hands on experience with:
 - **State Management** - Handling user sessions and data persistence
 - **Responsive Web Design** - Creating mobile first layouts
 - **Cloud Deployment** - Deploying full stack applications
-
-## Future Enhancements
-
-- [ ] Rich text editor (WYSIWYG) for blog post creation
-- [ ] Image upload functionality for posts
-- [ ] Search functionality for posts
-- [ ] Post tags and filtering
-- [ ] Analytics dashboard for admin
-- [ ] Social media preview cards (OpenGraph)
-- [ ] RSS feed generation
-- [ ] Dark mode toggle
-
-## Author
-
-**Connor Hill**  
-iOS Developer & Blog Creator
-
-- Website: [connorhillblog.netlify.app](https://connorhillblog.netlify.app/)
-- Email: hilljamesconnor@gmail.com
-- GitHub: [@ConnorJamesHill](https://github.com/ConnorJamesHill)
-- LinkedIn: [Connor Hill](https://linkedin.com/in/connor-j-hill)
-- Twitter: [@ConnorJayHill](https://twitter.com/ConnorJayHill)
 
 ## License
 
