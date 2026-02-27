@@ -122,7 +122,7 @@ function init() {
       console.log('Starting account creation...');
 
       try {
-        const { db, auth } = await import('./js/firebase-config.js');
+        const { db, auth } = await import('./firebase-config.js');
         const { setDoc, doc, Timestamp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
         const { createUserWithEmailAndPassword, updateProfile } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
         
@@ -193,7 +193,7 @@ function init() {
   async function loadPostsFromFirebase() {
     try {
       // Dynamically import Firebase modules
-      const { db } = await import('./js/firebase-config.js');
+      const { db } = await import('./firebase-config.js');
       const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
       
       const q = query(collection(db, 'posts'), orderBy('sortDate', 'desc'));

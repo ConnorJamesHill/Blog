@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - Code Journey</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../css/styles.css">
   <style>
     .admin-header {
       background: var(--surface);
@@ -196,7 +196,7 @@
     <div class="admin-title">📝 Admin Panel</div>
     <div class="admin-actions">
       <span class="user-info" id="userEmail"></span>
-      <button class="secondary-button" onclick="window.location.href='index.html'">View Site</button>
+      <button class="secondary-button" onclick="window.location.href='../index.html'">View Site</button>
       <button class="ghost-button" id="logoutButton">Logout</button>
     </div>
   </header>
@@ -265,7 +265,7 @@
   </div>
 
   <script type="module">
-    import { auth, db, isAdmin } from './js/firebase-config.js';
+    import { auth, db, isAdmin } from '../js/firebase-config.js';
     import { 
       signOut,
       onAuthStateChanged
@@ -293,11 +293,11 @@
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         // Not logged in - redirect to login
-        window.location.href = 'admin-login.html';
+        window.location.href = 'login.html';
       } else if (!isAdmin(user)) {
         // Logged in but not admin - redirect to main page with alert
         alert('Access denied. Admin privileges required.');
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
       } else {
         // Logged in as admin - allow access
         document.getElementById('userEmail').textContent = user.email;
@@ -309,7 +309,7 @@
     document.getElementById('logoutButton').addEventListener('click', async () => {
       try {
         await signOut(auth);
-        window.location.href = 'admin-login.html';
+        window.location.href = 'login.html';
       } catch (error) {
         console.error('Logout error:', error);
       }
