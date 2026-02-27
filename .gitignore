@@ -1,20 +1,48 @@
 # Firebase config with sensitive data (optional - Firebase configs are safe to commit)
 # js/firebase-config.js
 
-# Node modules if you add them later
+# Node modules
 node_modules/
+functions/node_modules/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+firebase-debug.*.log
 
 # Mac system files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 
 # IDE files
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
 
 # Log files
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Temporary files
 *.tmp
 *.swp
 *~
+.cache/
+
+# Temporary blog post drafts
+first-blog-post.html
+first-blog-post-content.html
+first-blog-post-content-only.html
+
+# Environment variables
+.env
+.env.local
+.env.*.local
