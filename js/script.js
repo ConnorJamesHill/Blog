@@ -78,16 +78,16 @@ function init() {
     tab.addEventListener("click", () => setActiveTab(tab.dataset.tab));
   });
 
-  // Handle initial hash navigation
+  // Handle initial hash navigation (restore tab on page load/refresh)
   const hash = window.location.hash.slice(1);
-  if (hash && ['blogs', 'portfolio', 'about', 'settings'].includes(hash)) {
+  if (hash && ['blogs', 'portfolio', 'socials', 'about', 'settings'].includes(hash)) {
     setActiveTab(hash);
   }
 
-  // Handle hash changes (for subscribe buttons, etc.)
+  // Handle hash changes (browser back/forward, subscribe buttons, etc.)
   window.addEventListener('hashchange', () => {
     const hash = window.location.hash.slice(1);
-    if (hash && ['blogs', 'portfolio', 'about', 'settings'].includes(hash)) {
+    if (hash && ['blogs', 'portfolio', 'socials', 'about', 'settings'].includes(hash)) {
       setActiveTab(hash);
     }
   });
