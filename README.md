@@ -42,8 +42,7 @@ A modern, full stack blog platform built from scratch with vanilla JavaScript, H
 - SendGrid (Email delivery)
 
 **Deployment:**
-- Netlify (Frontend hosting)
-- Firebase Hosting (Alternative option)
+- Netlify
 
 ## Project Structure
 
