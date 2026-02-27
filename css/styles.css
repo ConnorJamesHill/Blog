@@ -497,34 +497,6 @@ body {
   color: #0077B5;
 }
 
-.instagram-card .social-icon {
-  background: linear-gradient(135deg, #833AB4 0%, #FD1D1D 50%, #F77737 100%);
-  color: white;
-}
-
-.instagram-card:hover {
-  border-color: #E1306C;
-}
-
-.instagram-card .social-handle {
-  background: rgba(225, 48, 108, 0.1);
-  color: #E1306C;
-}
-
-.tiktok-card .social-icon {
-  background: #000000;
-  color: white;
-}
-
-.tiktok-card:hover {
-  border-color: #000000;
-}
-
-.tiktok-card .social-handle {
-  background: rgba(0, 0, 0, 0.1);
-  color: #000000;
-}
-
 .github-card .social-icon {
   background: #333333;
   color: white;
