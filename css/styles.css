@@ -889,8 +889,28 @@ body {
 }
 
 .benefit-item {
-  padding: 18px 0;
+  padding: 18px 0 18px 36px;
   border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.benefit-item::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  line-height: 1;
 }
 
 .benefit-item:first-child {
